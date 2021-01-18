@@ -12,6 +12,7 @@ from flask_restful import Resource
 from ..util import authenticate
 from ...print.weasyprinter import WeasyPrinter
 
+
 def parse_request_content():
   files = request.files
 
@@ -21,6 +22,7 @@ def parse_request_content():
   font_files = files.getlist("font") if "font" in files else []
 
   return html_files, css_files, attachment_files, font_files
+
 
 class PrintAPI(Resource):
   decorators = [authenticate]

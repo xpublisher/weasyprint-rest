@@ -11,6 +11,8 @@ UNICODE_SCHEME_RE = re.compile('^([a-zA-Z][a-zA-Z0-9.+-]+):')
 
 
 class WeasyPrinter():
+
+
   def __init__(self, html, css = None, attachments = None, fonts = None):
     self.html = html
 
@@ -35,6 +37,7 @@ class WeasyPrinter():
 
     return html.write_pdf(stylesheets=css, image_cache=None, font_config=font_config)
 
+
   def _url_fetcher(self, url):
     if not UNICODE_SCHEME_RE.match(url): # pragma: no cover
       raise ValueError('Not an absolute URI: %r' % url)
@@ -46,14 +49,12 @@ class WeasyPrinter():
       raise PermissionError('Requested URL %r was blocked because of restircion definitions.' % url)
     return default_url_fetcher(url)
 
+
   def _resolve_file(self, url):
     absFilePath = re.sub("^file://", "", url)
     filePath = os.path.relpath(absFilePath, os.getcwd()) 
 
     file = None
-    # if filePath in self.css:
-    #   # file = self.css[filePath]
-    #   raise Exception('Ignore file %r was not found.')
     if filePath in self.attachments:
       file = self.attachments[filePath]
     
