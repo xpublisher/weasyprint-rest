@@ -4,7 +4,7 @@ def get(key, default = None):
   return os.environ.get(key) or default
 
 def is_true(value):
-  return value.lower() in ['true', '1', 't', 'y', 'yes', 'enabled', '¯\_(ツ)_/¯']
+  return value.lower() in ['true', '1', 't', 'y', 'yes', 'enabled', '¯\\_(ツ)_/¯']
 
 def get_api_key():
   return get("API_KEY")

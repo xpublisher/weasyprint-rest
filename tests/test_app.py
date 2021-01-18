@@ -1,4 +1,4 @@
 
 
-def test_app(capsys, example_fixture):
+def test_app():
   pass
