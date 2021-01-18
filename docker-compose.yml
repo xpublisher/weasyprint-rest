@@ -1,0 +1,10 @@
+version: "3"
+services:
+  weasyprint:
+    build: 
+      context: .
+      dockerfile: dev.Dockerfile
+    ports: 
+      - 7070:5000
+    environment: 
+      - X_API_KEY=test
