@@ -3,7 +3,7 @@
 
 from .web.util import app, api
 from .web.routes import register_routes
-from ..env import is_debug_mode
+from .env import is_debug_mode
 
 
 if __name__ == '__main__':
