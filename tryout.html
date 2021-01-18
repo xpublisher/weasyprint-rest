@@ -1,0 +1,19 @@
+<html>
+  <body>
+    <form action="http://localhost:5000/api/v1.0/print" method="post" enctype="multipart/form-data">
+      <label for="html">HTML File:</label><br>
+      <input type="file" id="html" name="html"><br>
+
+      <label for="css">CSS Files:</label><br>
+      <input type="file" id="css" name="css" multiple><br>
+
+      <label for="attachment">Attachment Files:</label><br>
+      <input type="file" id="attachment" name="attachment" multiple><br>
+
+      <label for="font">Font Files:</label><br>
+      <input type="file" id="font" name="font" multiple><br>
+
+      <input type="submit" value="Submit">
+    </form> 
+  </body>
+</html>

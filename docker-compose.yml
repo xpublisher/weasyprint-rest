@@ -1,10 +1,12 @@
 version: "3"
 services:
-  weasyprint:
+  weasyprint-rest:
     build: 
       context: .
       dockerfile: dev.Dockerfile
     ports: 
-      - 7070:5000
+      - 5000:5000
     environment: 
-      - X_API_KEY=test
+      API_KEY:
+      ALLOWED_URL_PATTERN: ^.*\.palatzky.net/.*$$
+
