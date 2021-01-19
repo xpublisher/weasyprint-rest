@@ -16,15 +16,35 @@ from ..env import (
   get_max_upload_size, is_debug_mode, get_secret_key
 )
 
-app = Flask(__name__)
+_app = None
+_api = None
 
-# set configurations
-app.config['MAX_CONTENT_LENGTH'] = get_max_upload_size()
-app.config['DEBUG'] = is_debug_mode()
-app.config['MAIL_ENABLED'] = False
-app.config['SECRET_KEY'] = get_secret_key()
 
-api = Api(app)
+def create_app():
+  global _app, _api
+  _app = Flask(__name__)
+
+  # set configurations
+  _app.config['MAX_CONTENT_LENGTH'] = get_max_upload_size()
+  _app.config['DEBUG'] = is_debug_mode()
+  _app.config['MAIL_ENABLED'] = False
+  _app.config['SECRET_KEY'] = get_secret_key()
+
+  _api = Api(_app)
+
+
+def app():
+  global _app
+  if _app is None:  # pragma: no cover 
+    create_app()
+  return _app
+
+
+def api():
+  global _api
+  if _api is None:  # pragma: no cover 
+    create_app()
+  return _api
 
 
 def authenticate(func):
@@ -35,7 +55,7 @@ def authenticate(func):
         get_api_key() is None
         or ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY'])
       )
-    except:  # noqa: E722
+    except: # noqa: E722 # pragma: no cover
       return abort(401)
 
     if authenticated is True:
@@ -56,7 +76,7 @@ def check_url_access(url):
     if re.match(blocked_url_pattern, url):
       return False
     return True
-  except:  # noqa: E722
+  except:  # noqa: E722 # pragma: no cover
     logging.error(
       "Could not parse one of the URL Patterns correctly. Therefor the URL %r was " +
       "blocked. Please check your configuration." % url

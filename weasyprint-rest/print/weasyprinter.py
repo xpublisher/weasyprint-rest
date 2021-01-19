@@ -10,7 +10,7 @@ UNICODE_SCHEME_RE = re.compile('^([a-zA-Z][a-zA-Z0-9.+-]+):')
 
 class WeasyPrinter():
 
-  def __init__(self, html, css=None, attachments=None, fonts=None):
+  def __init__(self, html, css=None, attachments=None):
     self.html = html
 
     if css is not None:
@@ -18,9 +18,6 @@ class WeasyPrinter():
 
     if attachments is not None:
       self.attachments = {item.filename: item for item in attachments}
-
-    if fonts is not None:
-      self.fonts = {item.filename: item for item in fonts}
 
   def write(self, mode="pdf"):
     html = HTML(file_obj=self.html, encoding="utf-8", url_fetcher=self._url_fetcher)
@@ -33,7 +30,11 @@ class WeasyPrinter():
         CSS(file_obj=sheet, url_fetcher=self._url_fetcher, font_config=font_config) for _, sheet in self.css.items()
       ])
 
-    return html.write_pdf(stylesheets=css, image_cache=None, font_config=font_config)
+    if mode == "pdf":
+      return html.write_pdf(stylesheets=css, image_cache=None, font_config=font_config)
+
+    if mode == "png":
+      return html.write_png(stylesheets=css, image_cache=None, font_config=font_config)
 
   def _url_fetcher(self, url):
     if not UNICODE_SCHEME_RE.match(url):  # pragma: no cover
@@ -51,10 +52,10 @@ class WeasyPrinter():
     filePath = os.path.relpath(absFilePath, os.getcwd())
 
     file = None
-    if filePath in self.attachments:
+    if filePath in self:
       file = self.attachments[filePath]
 
-    if file is None:
+    if file is None:  # pragma: no cover
       raise FileNotFoundError('File %r was not found.' % filePath)
 
     return {

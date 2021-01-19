@@ -17,7 +17,8 @@ RUN /venv/bin/pytest
 FROM martinheinz/python-3.8.1-buster-tools:latest AS runner
 COPY --from=tester /venv /venv
 COPY --from=tester /app /app
-
+ENV ENABLE_DEBUG_MODE=true
+ENV FLASK_ENV=development
 WORKDIR /app
 
 ENTRYPOINT ["/venv/bin/python3", "-m", "weasyprint-rest"]

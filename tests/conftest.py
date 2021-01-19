@@ -1,11 +1,14 @@
 import logging
 import pytest
+import importlib
+app_module = importlib.import_module(".app", package='weasyprint-rest')
 
-LOGGER = logging.getLogger(__name__)
+_app = None
 
 
-@pytest.fixture(scope='function')
-def example_fixture():
-  LOGGER.info("Setting Up Example Fixture...")
-  yield
-  LOGGER.info("Tearing Down Example Fixture...")
+@pytest.fixture
+def app():
+  global _app
+  if _app is None:
+    _app = app_module.create_app()
+  return _app

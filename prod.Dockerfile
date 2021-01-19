@@ -9,19 +9,15 @@ COPY requirements.txt /requirements.txt
 RUN /venv/bin/pip install --disable-pip-version-check -r /requirements.txt
 
 FROM builder-venv AS tester
-
 COPY . /app
 WORKDIR /app
 RUN /venv/bin/pytest
 
 FROM gcr.io/distroless/python3-debian10 AS runner
 COPY --from=tester /venv /venv
-COPY --from=tester /app /app
-
+COPY --from=tester /app/weasyprint-rest /app/weasyprint-rest
 WORKDIR /app
-
 ENTRYPOINT ["/venv/bin/python3", "-m", "weasyprint-rest"]
 USER 1001
-
 LABEL name={NAME}
 LABEL version={VERSION}

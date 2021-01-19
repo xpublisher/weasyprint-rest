@@ -11,17 +11,20 @@
 		<a href="https://github.com/xpublisher/weasyprint-rest/actions?query=Publish">
 			<img src="https://github.com/xpublisher/weasyprint-rest/workflows/Publish/badge.svg" alt="Publish" />
 		</a>
-	  <a href="https://codeclimate.com/github/xpublisher/weasyprint-rest/test_coverage">
-      <img src="https://api.codeclimate.com/v1/badges/f761c1ed2e2694f98e9c/test_coverage" alt="Test coverage" />
-    </a>
     <a href="https://codeclimate.com/github/xpublisher/weasyprint-rest/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/f761c1ed2e2694f98e9c/maintainability" alt="Maintainability" />
     </a>
     <a href="https://sonarcloud.io/dashboard?id=xpublisher_weasyprint-rest">
       <img src="https://sonarcloud.io/api/project_badges/measure?project=xpublisher_weasyprint-rest&amp;metric=alert_status" alt="Quality Gate Status">
     </a>
+    <a href="https://app.dependabot.com/">
+      <img src="https://img.shields.io/badge/Dependabot-active-brightgreen.svg?logo=dependabot" alt="Dependabot active">
+    </a>
 	</p>
 	<p>
+	  <a href="https://codeclimate.com/github/xpublisher/weasyprint-rest/test_coverage">
+      <img src="https://api.codeclimate.com/v1/badges/f761c1ed2e2694f98e9c/test_coverage" alt="Test coverage" />
+    </a>
     <a href="https://sonarcloud.io/dashboard?id=xpublisher_weasyprint-rest">
       <img src="https://sonarcloud.io/api/project_badges/measure?project=xpublisher_weasyprint-rest&amp;metric=security_rating" alt="Security Rating">
     </a>
