@@ -29,7 +29,9 @@ class WeasyPrinter():
     if self.css is None:
       css = []
     else:
-      css = [CSS(file_obj=sheet, url_fetcher=self._url_fetcher, font_config=font_config) for key, sheet in self.css.items()]
+      css = ([
+        CSS(file_obj=sheet, url_fetcher=self._url_fetcher, font_config=font_config) for _, sheet in self.css.items()
+      ])
 
     return html.write_pdf(stylesheets=css, image_cache=None, font_config=font_config)
 
