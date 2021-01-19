@@ -26,6 +26,7 @@ app.config['SECRET_KEY'] = get_secret_key()
 
 api = Api(app)
 
+
 def authenticate(func):
   @wraps(func)
   def verify_token(*args, **kwargs):
