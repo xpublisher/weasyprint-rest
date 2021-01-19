@@ -8,10 +8,8 @@ from flask_restful import Resource
 
 class HealthAPI(Resource):
 
-
   def __init__(self):
     super(HealthAPI, self).__init__()
-
 
   def get(self):
     pong = request.args.get('ping', '')

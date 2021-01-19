@@ -26,7 +26,7 @@ class WeasyPrinter():
     html = HTML(file_obj=self.html, encoding="utf-8", url_fetcher=self._url_fetcher)
     font_config = FontConfiguration()
 
-    if self.css == None:
+    if self.css is None:
       css = []
     else:
       css = [CSS(file_obj=sheet, url_fetcher=self._url_fetcher, font_config=font_config) for key, sheet in self.css.items()]
@@ -34,7 +34,7 @@ class WeasyPrinter():
     return html.write_pdf(stylesheets=css, image_cache=None, font_config=font_config)
 
   def _url_fetcher(self, url):
-    if not UNICODE_SCHEME_RE.match(url): # pragma: no cover
+    if not UNICODE_SCHEME_RE.match(url):  # pragma: no cover
       raise ValueError('Not an absolute URI: %r' % url)
 
     if url.startswith('file://'):
@@ -46,7 +46,7 @@ class WeasyPrinter():
 
   def _resolve_file(self, url):
     absFilePath = re.sub("^file://", "", url)
-    filePath = os.path.relpath(absFilePath, os.getcwd()) 
+    filePath = os.path.relpath(absFilePath, os.getcwd())
 
     file = None
     if filePath in self.attachments:
@@ -55,8 +55,8 @@ class WeasyPrinter():
     if file is None:
       raise FileNotFoundError('File %r was not found.' % filePath)
 
-    return ({
+    return {
       'mime_type': file.mimetype,
       'file_obj': file,
       'filename': filePath
-    })
+    }

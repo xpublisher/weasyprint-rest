@@ -29,9 +29,9 @@ def authenticate(func):
   @wraps(func)
   def verify_token(*args, **kwargs):
     try:
-      authenticated = (get_api_key() is None 
-        or ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY']))
-    except: # noqa: E722
+      authenticated = (get_api_key() is None or
+      ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY']))
+    except:  # noqa: E722
       return abort(401)
 
     if authenticated is True:
@@ -40,7 +40,6 @@ def authenticate(func):
       abort(401)
 
   return verify_token
-
 
 def check_url_access(url): 
   allowed_url_pattern = get_allowed_url_pattern()
@@ -52,7 +51,7 @@ def check_url_access(url):
     if re.match(blocked_url_pattern, url):
       return False
     return True
-  except:
+  except:  # noqa: E722
     logging.error("Could not parse one of the URL Patterns correctly. Therefor the URL %r was " +
       "blocked. Please check your configuration." % url)
     return False

@@ -13,8 +13,8 @@ from ...print.weasyprinter import WeasyPrinter
 def parse_request_content():
   files = request.files
 
-  html_files =  files["html"]
-  css_files =  files.getlist("css") if "css" in files else []
+  html_files = files["html"]
+  css_files = files.getlist("css") if "css" in files else []
   attachment_files = files.getlist("attachment") if "attachment" in files else []
   font_files = files.getlist("font") if "font" in files else []
 
@@ -38,10 +38,9 @@ class PrintAPI(Resource):
     printer = WeasyPrinter(html, css, attachments, fonts)
     pdf = printer.write()
 
-    # build response 
+    # build response
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     basename, _ = os.path.splitext(html.filename)
     response.headers['Content-Disposition'] = 'inline;filename=%s' % (basename + ".pdf")
     return response
-
