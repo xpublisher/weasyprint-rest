@@ -1,11 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import time
 import os
-import logging
 
-from weasyprint import Attachment
 from flask import request, abort, make_response
 from flask_restful import Resource
 

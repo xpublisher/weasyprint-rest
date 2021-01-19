@@ -11,8 +11,8 @@ from flask import Flask, abort, request
 from flask_restful import Api
 from functools import wraps
 
-from ..env import get_api_key, get_allowed_url_pattern, get_blocked_url_pattern,\
-  get_max_upload_size, is_debug_mode, get_secret_key
+from ..env import (get_api_key, get_allowed_url_pattern, get_blocked_url_pattern,
+  get_max_upload_size, is_debug_mode, get_secret_key)
 
 app = Flask(__name__, static_url_path="")
 
@@ -24,15 +24,16 @@ app.config['SECRET_KEY'] = get_secret_key()
 
 api = Api(app)
 
+
 def authenticate(func):
   @wraps(func)
   def verify_token(*args, **kwargs):
     try:
-      authenticated = get_api_key() == None \
-        or ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY'])
-    except:
+      authenticated = (get_api_key() is None 
+        or ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY']))
+    except: # noqa: E722
       return abort(401)
-    
+
     if authenticated is True:
       return func(*args, **kwargs)
     else:
@@ -52,5 +53,6 @@ def check_url_access(url):
       return False
     return True
   except:
-    logging.error("Could not parse one of the URL Patterns correctly. Therefor the URL %r was blocked. Please check your configuration." % url)
+    logging.error("Could not parse one of the URL Patterns correctly. Therefor the URL %r was " +
+      "blocked. Please check your configuration." % url)
     return False

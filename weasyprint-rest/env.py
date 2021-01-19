@@ -1,12 +1,12 @@
 import os
 
 
-def get(key, default = None):
+def get(key, default=None):
   return os.environ.get(key) or default
 
 
 def is_true(value):
-  return isinstance(value, str)  and value.lower() in ['true', '1', 't', 'y', 'yes', 'enabled', '¯\\_(ツ)_/¯']
+  return isinstance(value, str) and value.lower() in ['true', '1', 't', 'y', 'yes', 'enabled', '¯\\_(ツ)_/¯']
 
 
 def get_api_key():

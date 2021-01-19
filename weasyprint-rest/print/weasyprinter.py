@@ -1,8 +1,6 @@
 import re
 import os
-import io
-import logging
-from weasyprint import HTML, CSS, Attachment, default_url_fetcher
+from weasyprint import HTML, CSS, default_url_fetcher
 from weasyprint.fonts import FontConfiguration
 
 from ..web.util import check_url_access
@@ -12,19 +10,17 @@ UNICODE_SCHEME_RE = re.compile('^([a-zA-Z][a-zA-Z0-9.+-]+):')
 
 class WeasyPrinter():
 
-
-  def __init__(self, html, css = None, attachments = None, fonts = None):
+  def __init__(self, html, css=None, attachments=None, fonts=None):
     self.html = html
 
-    if css != None:
+    if css is not None:
       self.css = {item.filename: item for item in css}
 
-    if attachments != None:
+    if attachments is not None:
       self.attachments = {item.filename: item for item in attachments}
 
-    if fonts != None:
+    if fonts is not None:
       self.fonts = {item.filename: item for item in fonts}
-
 
   def write(self, mode="pdf"):
     html = HTML(file_obj=self.html, encoding="utf-8", url_fetcher=self._url_fetcher)
@@ -37,7 +33,6 @@ class WeasyPrinter():
 
     return html.write_pdf(stylesheets=css, image_cache=None, font_config=font_config)
 
-
   def _url_fetcher(self, url):
     if not UNICODE_SCHEME_RE.match(url): # pragma: no cover
       raise ValueError('Not an absolute URI: %r' % url)
@@ -49,7 +44,6 @@ class WeasyPrinter():
       raise PermissionError('Requested URL %r was blocked because of restircion definitions.' % url)
     return default_url_fetcher(url)
 
-
   def _resolve_file(self, url):
     absFilePath = re.sub("^file://", "", url)
     filePath = os.path.relpath(absFilePath, os.getcwd()) 
@@ -57,15 +51,12 @@ class WeasyPrinter():
     file = None
     if filePath in self.attachments:
       file = self.attachments[filePath]
-    
-    if file == None:
+
+    if file is None:
       raise FileNotFoundError('File %r was not found.' % filePath)
 
-    return  {
+    return ({
       'mime_type': file.mimetype,
       'file_obj': file,
       'filename': filePath
-    }
-
-
-
+    })
