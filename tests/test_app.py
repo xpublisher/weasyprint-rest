@@ -1,12 +1,7 @@
-import logging
 import time
 import os
-import inspect
-from io import BytesIO
-from flask import url_for
-from werkzeug.datastructures import FileStorage
 import mimetypes
-import difflib
+from werkzeug.datastructures import FileStorage
 
 def test_app():
   pass
@@ -35,7 +30,7 @@ def test_post_print_png_and_check(client):
   assert verify_output(data)
 
 
-def test_post_print_png_and_check(client):
+def test_post_print_pdf(client):
   data = get_pdf_input()
   data["mode"] = "pdf"
   res = client.post(
@@ -118,10 +113,10 @@ def verify_output(data):
     return input_data == data
 
 
-def get_path(relative_path): 
+def get_path(relative_path):
   dir_path = os.path.dirname(os.path.realpath(__file__))
   return os.path.join(dir_path, relative_path)
 
 
-def auth_header(): 
+def auth_header():
   return {"X_API_KEY": "SECRET_API_KEY"}
