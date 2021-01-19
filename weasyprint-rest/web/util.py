@@ -16,7 +16,7 @@ from ..env import (
   get_max_upload_size, is_debug_mode, get_secret_key
 )
 
-app = Flask(__name__, static_url_path="")
+app = Flask(__name__)
 
 # set configurations
 app.config['MAX_CONTENT_LENGTH'] = get_max_upload_size()
@@ -25,7 +25,6 @@ app.config['MAIL_ENABLED'] = False
 app.config['SECRET_KEY'] = get_secret_key()
 
 api = Api(app)
-
 
 def authenticate(func):
   @wraps(func)
