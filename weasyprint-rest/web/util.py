@@ -32,7 +32,7 @@ def authenticate(func):
   def verify_token(*args, **kwargs):
     try:
       authenticated = (
-        get_api_key() is None 
+        get_api_key() is None
         or ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY'])
       )
     except:  # noqa: E722
@@ -57,6 +57,8 @@ def check_url_access(url):
       return False
     return True
   except:  # noqa: E722
-    logging.error("Could not parse one of the URL Patterns correctly. Therefor the URL %r was " +
-      "blocked. Please check your configuration." % url)
+    logging.error(
+      "Could not parse one of the URL Patterns correctly. Therefor the URL %r was " +
+      "blocked. Please check your configuration." % url
+    )
     return False
