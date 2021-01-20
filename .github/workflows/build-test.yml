@@ -42,7 +42,6 @@ jobs:
     - name: SonarCloud scanner
       uses: sonarsource/sonarcloud-github-action@master
       with:
-        projectBaseDir: my-custom-directory
         args: >
           -Dsonar.organization=xpublisher
           -Dsonar.projectKey=weasyprint-rest
