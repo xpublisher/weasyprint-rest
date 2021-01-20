@@ -120,11 +120,9 @@ POST /api/v1.0/print
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
 | `html` | `file` | __Required__. HTML file to convert |
-| `mode` | `"pdf" | "png"` | __Optional__. Controls whether a PDF or PNG is rendered. The default is `pdf` |
+| `mode` | `"pdf" or "png"` | __Optional__. Controls whether a PDF or PNG is rendered. The default is `pdf` |
 | `css` | `file or file[]` | __Optional__. CSS to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `attachment`.|
 | `attachment` | `file or file[]` | __Optional__. Attachments which are referenced in the html. This can be images, CSS or fonts. The name must be 1:1 the same as used in the files. |
-
-If the
 
 #### Response
 
