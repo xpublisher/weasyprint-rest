@@ -1,6 +1,11 @@
 import time
 import os
+import io
+import logging
+import hashlib
 import mimetypes
+# from PIL import Image
+# from pixelmatch.contrib.PIL import pixelmatch
 from werkzeug.datastructures import FileStorage
 
 def test_app():
@@ -26,8 +31,10 @@ def test_post_print_png_and_check(client):
     data=get_pdf_input(),
     headers=auth_header()
   )
+  assert res.status_code == 200
+
   data = res.get_data()
-  assert verify_output(data)
+  verify_output(data)
 
 
 def test_post_print_pdf(client):
@@ -50,7 +57,7 @@ def test_post_print_authentication(client):
   assert res.status_code == 401
 
 
-def test_post_print_html_missing(client):
+def test_post_print_html_missing_params(client):
   res = client.post(
     "/api/v1.0/print",
     content_type='multipart/form-data',
@@ -80,6 +87,7 @@ def get_pdf_input():
     "html": read_file(input_dir, "report.html"),
     "css": read_file(input_dir, "report.css"),
     "attachment": [
+      read_file(input_dir, "report.css"),
       read_file(input_dir, "FiraSans-Bold.otf"),
       read_file(input_dir, "FiraSans-Italic.otf"),
       read_file(input_dir, "FiraSans-LightItalic.otf"),
@@ -108,9 +116,20 @@ def read_file(path, filename):
 def verify_output(data):
   input_file = get_path("./resources/report/result.png")
 
+  # data_image = Image.open(io.BytesIO(data))
+
+  data_hash = hashlib.sha1(data).hexdigest()
   with open(input_file, "rb") as file:
     input_data = file.read()
-    return input_data == data
+    input_hash = hashlib.sha1(input_data).hexdigest()
+    # input_image = Image.open(io.BytesIO(input_data))
+    # image_diff = Image.new("RGBA", input_image.size)
+
+    # mismatch = pixelmatch(image_diff, data_image, image_diff, includeAA=True)
+
+    # logging.error("DIFF IS" + str(mismatch))
+    # assert not diff.getbbox()
+    assert data_hash == input_hash
 
 
 def get_path(relative_path):

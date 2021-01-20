@@ -52,7 +52,7 @@ class WeasyPrinter():
     filePath = os.path.relpath(absFilePath, os.getcwd())
 
     file = None
-    if filePath in self:
+    if filePath in self.attachments:
       file = self.attachments[filePath]
 
     if file is None:  # pragma: no cover
