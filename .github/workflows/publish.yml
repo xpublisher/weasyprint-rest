@@ -14,5 +14,5 @@ jobs:
       run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})
     - name: Log into Registry
       run: echo "${{ secrets.REGISTRY_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-    - name: Push to GitHub Package Registry
+    - name: Push to GitHub Package Registry (tag version)
       run: make push VERSION=${{ env.RELEASE_VERSION }}

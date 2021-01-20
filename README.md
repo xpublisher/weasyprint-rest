@@ -1,7 +1,7 @@
 <div align="center">
 	<p>
 		<a href="https://github.com/xpublisher/weasyprint-rest#is=awesome">
-			<img width="90%" src="https://raw.githubusercontent.com/xpublisher/weasyprint-rest/main/resources/logo.svg?sanitize=true"/>
+			<img width="90%" src="https://raw.githubusercontent.com/xpublisher/weasyprint-rest/main/resources/logo_background.svg?sanitize=true"/>
 		</a>
 	</p>
 	<p>
@@ -37,8 +37,95 @@
 	</p>
 	<hr>
 	<p>
-		Service and docker image for <a href="https://weasyprint.org/">WeasyPrint</a>
+		Service and docker image for <a href="https://weasyprint.org/">WeasyPrint - the awesome document factory</a>
 	</p>
 </div>
 
-## TBD
+## Usage
+
+The following command builds the report.pdf from the official WeasyPrint sample. 
+
+```bash
+curl  \
+-F 'html=@report.html' \
+-F 'css=@report.css' \
+-F "attachment=@FiraSans-Bold.otf" \
+-F "attachment=@FiraSans-Italic.otf" \
+-F "attachment=@FiraSans-LightItalic.otf" \
+-F "attachment=@FiraSans-Light.otf" \
+-F "attachment=@FiraSans-Regular.otf" \
+-F "attachment=@heading.svg" \
+-F "attachment=@internal-links.svg" \
+-F "attachment=@multi-columns.svg" \
+-F "attachment=@report-cover.jpg" \
+-F "attachment=@style.svg" \
+-F "attachment=@table-content.svg" \
+-F "attachment=@thumbnail.png" \
+http://localhost:5000/api/v1.0/print --output report.pdf
+```
+
+## Configuration
+
+All configurations are set via environment variables.
+
+| Name                               | Default  | Description
+|------------------------------------|----------|------------
+| `API_KEY`                          | `""`     | Sets an API key that protects the `/api/v1.0/print` service from unauthorized access. The key is later compared with the header `X_API_KEY`. If no API_KEY is set, anyone can access the application.
+| `BLOCKED_URL_PATTERN`              | `"^.*$"` | Pattern to block certain URLs. These URLs are later not allowed within resources of the print service. These resources will be ignored.
+| `ALLOWED_URL_PATTERN`              | `"^$"`   | Pattern to allow certain URLs. These URLs are later allowed within resources of the print service.
+| `MAX_UPLOAD_SIZE`                  | `16777216` | Maximum size of the upload. Default is `16MB`
+
+## Services
+
+### Health
+
+Service to check if the service is still working properly.
+
+```http
+GET /api/v1.0/health
+```
+
+#### Parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `ping` | `string` | __Optional__. Returns the `ping` in the field `pong` |
+
+#### Response
+
+```javascript
+{
+  "status"    : "OK",
+  "timestamp" : number,
+  "pong"      : string?
+}
+```
+
+The `status` does always contain "OK".
+
+The `timestamp` does contain the current timestamp of the server in milliseconds.
+
+The `pong` is optional and will only be sent if the `ping` parameter was passed. It contains the same value that `ping` had.
+
+### Print
+
+Service to print a pdf or png
+
+```http
+POST /api/v1.0/print
+```
+
+#### Parameters
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `html` | `file` | __Required__. HTML file to convert |
+| `mode` | `"pdf" | "png"` | __Optional__. Controls whether a PDF or PNG is rendered. The default is `pdf` |
+| `css` | `file or file[]` | __Optional__. CSS to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `attachment`.|
+| `attachment` | `file or file[]` | __Optional__. Attachments which are referenced in the html. This can be images, CSS or fonts. The name must be 1:1 the same as used in the files. |
+
+If the
+
+#### Response
+
+Raw output stream of with `Content-Type` of `application/pdf` or `image/png`. For `pdf` also the header `Content-Disposition = 'inline;filename={HTML_FILE_NAME}.pdf` will be set.

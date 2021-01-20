@@ -1,6 +1,6 @@
 import importlib
 import pytest
-app_module = importlib.import_module(".app", package='weasyprint-rest')
+from weasyprint_rest.app import create_app
 
 _app = None
 
@@ -9,5 +9,5 @@ _app = None
 def app():
   global _app  # pylint: disable=global-statement
   if _app is None:
-    _app = app_module.create_app()
+    _app = create_app()
   return _app
