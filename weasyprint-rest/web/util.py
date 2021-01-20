@@ -35,14 +35,14 @@ def create_app():
 
 def app():
   global _app
-  if _app is None:  # pragma: no cover 
+  if _app is None:  # pragma: no cover
     create_app()
   return _app
 
 
 def api():
   global _api
-  if _api is None:  # pragma: no cover 
+  if _api is None:  # pragma: no cover
     create_app()
   return _api
 
@@ -55,7 +55,7 @@ def authenticate(func):
         get_api_key() is None
         or ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY'])
       )
-    except: # noqa: E722 # pragma: no cover
+    except:  # noqa: E722 # pragma: no cover
       return abort(401)
 
     if authenticated is True:

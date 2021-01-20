@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import logging
 
 from flask import request, abort, make_response
 from flask_restful import Resource
