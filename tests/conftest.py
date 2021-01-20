@@ -1,4 +1,3 @@
-import importlib
 import pytest
 from weasyprint_rest.app import create_app
 
