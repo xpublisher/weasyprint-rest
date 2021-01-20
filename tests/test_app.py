@@ -126,7 +126,7 @@ def test_post_print_foreign_url_allow(client, monkeypatch):
   assert not verify_output(data)
 
 
-def test_post_print_access_deny(client, monkeypatch):
+def test_post_print_access_deny(client):
   res = client.post(
     "/api/v1.0/print",
     content_type='multipart/form-data'
