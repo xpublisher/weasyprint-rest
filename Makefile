@@ -2,7 +2,7 @@
 MODULE := weasyprint
 
 # Where to push the docker image.
-REGISTRY ?= docker.pkg.github.com/xpublisher
+REGISTRY ?= docker.pkg.github.com/xpublisher/weasyprint-rest
 
 IMAGE := $(REGISTRY)/$(MODULE)
 
