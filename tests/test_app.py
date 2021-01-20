@@ -112,7 +112,7 @@ def test_post_print_foreign_url_deny(client):
   assert verify_output(data)
 
 
-def test_post_print_foreign_url_deny(client, monkeypatch):
+def test_post_print_foreign_url_allow(client, monkeypatch):
   monkeypatch.setenv("ALLOWED_URL_PATTERN", ".*", prepend=False)
   res = client.post(
     "/api/v1.0/print",
