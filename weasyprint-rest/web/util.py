@@ -55,7 +55,7 @@ def authenticate(func):
         get_api_key() is None
         or ('X_API_KEY' in request.headers and get_api_key() == request.headers['X_API_KEY'])
       )
-    except:  # noqa: E722 # pragma: no cover
+    except Exception:  # pragma: no cover
       return abort(401)
 
     if authenticated is True:
@@ -76,7 +76,7 @@ def check_url_access(url):
     if re.match(blocked_url_pattern, url):
       return False
     return True
-  except:  # noqa: E722 # pragma: no cover
+  except Exception:  # pragma: no cover
     logging.error(
       "Could not parse one of the URL Patterns correctly. Therefor the URL %r was " +
       "blocked. Please check your configuration." % url

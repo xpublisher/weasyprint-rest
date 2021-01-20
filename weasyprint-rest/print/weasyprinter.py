@@ -48,18 +48,18 @@ class WeasyPrinter():
     return default_url_fetcher(url)
 
   def _resolve_file(self, url):
-    absFilePath = re.sub("^file://", "", url)
-    filePath = os.path.relpath(absFilePath, os.getcwd())
+    abs_file_path = re.sub("^file://", "", url)
+    file_path = os.path.relpath(abs_file_path, os.getcwd())
 
     file = None
-    if filePath in self.attachments:
-      file = self.attachments[filePath]
+    if file_path in self.attachments:
+      file = self.attachments[file_path]
 
     if file is None:  # pragma: no cover
-      raise FileNotFoundError('File %r was not found.' % filePath)
+      raise FileNotFoundError('File %r was not found.' % file_path)
 
     return {
       'mime_type': file.mimetype,
       'file_obj': file,
-      'filename': filePath
+      'filename': file_path
     }
