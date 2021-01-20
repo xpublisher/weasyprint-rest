@@ -126,6 +126,15 @@ def test_post_print_foreign_url_allow(client, monkeypatch):
   assert not verify_output(data)
 
 
+def test_post_print_access_deny(client, monkeypatch):
+  res = client.post(
+    "/api/v1.0/print",
+    content_type='multipart/form-data',
+    headers=auth_header()
+  )
+  assert res.status_code == 401
+
+
 def test_post_print_html_missing_params(client):
   res = client.post(
     "/api/v1.0/print",
