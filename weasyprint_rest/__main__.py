@@ -1,9 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from logging
-from waitress import serve
-from .env import is_debug_mode, is_production_environment
+from .env import is_debug_mode
 from .app import create_app
 
 if __name__ == '__main__':
