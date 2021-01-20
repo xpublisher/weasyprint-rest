@@ -129,8 +129,7 @@ def test_post_print_foreign_url_allow(client, monkeypatch):
 def test_post_print_access_deny(client, monkeypatch):
   res = client.post(
     "/api/v1.0/print",
-    content_type='multipart/form-data',
-    headers=auth_header()
+    content_type='multipart/form-data'
   )
   assert res.status_code == 401
 
