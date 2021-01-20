@@ -53,6 +53,6 @@ class PrintAPI(Resource):
       response.headers['Content-Type'] = 'application/pdf'
       response.headers['Content-Disposition'] = 'inline;filename=%s' % (basename + ".pdf")
     else:
-      response.headers['Content-Type'] = '	image/png'
+      response.headers['Content-Type'] = 'image/png'
 
     return response

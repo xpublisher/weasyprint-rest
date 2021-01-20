@@ -75,7 +75,7 @@ def check_url_access(url):
       return True
     if re.match(blocked_url_pattern, url):
       return False
-    return True
+    return True  # pragma: no cover
   except Exception:  # pragma: no cover
     logging.error(
       "Could not parse one of the URL Patterns correctly. Therefor the URL %r was " +

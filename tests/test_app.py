@@ -21,7 +21,7 @@ def test_get_health_timestamp(client):
   assert "timestamp" in res.json and min_time <= int(res.json["timestamp"]) <= max_time
 
 
-def test_post_print_png_and_check(client):
+def test_post_print_png(client):
   res = client.post(
     "/api/v1.0/print",
     content_type='multipart/form-data',
@@ -31,7 +31,24 @@ def test_post_print_png_and_check(client):
   assert res.status_code == 200
 
   data = res.get_data()
-  verify_output(data)
+  assert verify_output(data)
+
+
+def test_post_print_png_css_attachment(client):
+  req_data = get_pdf_input()
+  req_data['attachment'].append(req_data['css'])
+  del req_data['css']
+
+  res = client.post(
+    "/api/v1.0/print",
+    content_type='multipart/form-data',
+    data=get_pdf_input(),
+    headers=auth_header()
+  )
+  assert res.status_code == 200
+
+  data = res.get_data()
+  assert verify_output(data)
 
 
 def test_post_print_pdf(client):
@@ -46,12 +63,67 @@ def test_post_print_pdf(client):
   assert res.status_code == 200
 
 
-def test_post_print_authentication(client):
+def test_post_print_no_mode(client):
+  data = get_pdf_input()
+  del data["mode"]
   res = client.post(
     "/api/v1.0/print",
-    content_type='multipart/form-data'
+    content_type='multipart/form-data',
+    data=data,
+    headers=auth_header()
   )
-  assert res.status_code == 401
+  assert res.status_code == 200 and res.headers['Content-Type'] == "application/pdf"
+
+
+def test_post_print_mode_as_argument(client):
+  data = get_pdf_input()
+  del data["mode"]
+  res = client.post(
+    "/api/v1.0/print?mode=png",
+    content_type='multipart/form-data',
+    data=data,
+    headers=auth_header()
+  )
+  assert res.status_code == 200 and res.headers['Content-Type'] == "image/png"
+
+
+def test_post_print_foreign(client):
+  data = get_pdf_input()
+  del data["mode"]
+  res = client.post(
+    "/api/v1.0/print?mode=png",
+    content_type='multipart/form-data',
+    data=data,
+    headers=auth_header()
+  )
+  assert res.status_code == 200 and res.headers['Content-Type'] == "image/png"
+
+
+def test_post_print_foreign_url_deny(client):
+  res = client.post(
+    "/api/v1.0/print",
+    content_type='multipart/form-data',
+    data=get_pdf_input(),
+    headers=auth_header()
+  )
+  assert res.status_code == 200
+
+  data = res.get_data()
+  assert verify_output(data)
+
+
+def test_post_print_foreign_url_deny(client, monkeypatch):
+  monkeypatch.setenv("ALLOWED_URL_PATTERN", ".*", prepend=False)
+  res = client.post(
+    "/api/v1.0/print",
+    content_type='multipart/form-data',
+    data=get_pdf_input(),
+    headers=auth_header()
+  )
+
+  assert res.status_code == 200
+  data = res.get_data()
+  assert not verify_output(data)
 
 
 def test_post_print_html_missing_params(client):
@@ -84,7 +156,6 @@ def get_pdf_input():
     "html": read_file(input_dir, "report.html"),
     "css": read_file(input_dir, "report.css"),
     "attachment": [
-      read_file(input_dir, "report.css"),
       read_file(input_dir, "FiraSans-Bold.otf"),
       read_file(input_dir, "FiraSans-Italic.otf"),
       read_file(input_dir, "FiraSans-LightItalic.otf"),
@@ -112,21 +183,12 @@ def read_file(path, filename):
 
 def verify_output(data):
   input_file = get_path("./resources/report/result.png")
-
-  # data_image = Image.open(io.BytesIO(data))
-
   data_hash = hashlib.sha1(data).hexdigest()
   with open(input_file, "rb") as file:
     input_data = file.read()
     input_hash = hashlib.sha1(input_data).hexdigest()
-    # input_image = Image.open(io.BytesIO(input_data))
-    # image_diff = Image.new("RGBA", input_image.size)
-
-    # mismatch = pixelmatch(image_diff, data_image, image_diff, includeAA=True)
-
-    # logging.error("DIFF IS" + str(mismatch))
-    # assert not diff.getbbox()
-    assert data_hash == input_hash
+    return data_hash == input_hash
+  return False
 
 
 def get_path(relative_path):
