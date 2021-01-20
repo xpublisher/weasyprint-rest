@@ -7,7 +7,7 @@ _app = None
 
 @pytest.fixture
 def app():
-  global _app # noqa: W0603
+  global _app  # pylint: disable=global-statement
   if _app is None:
     _app = app_module.create_app()
   return _app

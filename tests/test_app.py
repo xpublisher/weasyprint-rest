@@ -1,11 +1,7 @@
 import time
 import os
-import io
-import logging
 import hashlib
 import mimetypes
-# from PIL import Image
-# from pixelmatch.contrib.PIL import pixelmatch
 from werkzeug.datastructures import FileStorage
 
 def test_app():
