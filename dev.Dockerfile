@@ -21,7 +21,7 @@ ENV ENABLE_DEBUG_MODE=true
 ENV FLASK_ENV=development
 WORKDIR /app
 
-ENTRYPOINT ["/venv/bin/python3", "-m", "weasyprint-rest"]
+ENTRYPOINT ["/venv/bin/python3", "-m", "weasyprint_rest"]
 USER 1001
 
 LABEL name={NAME}
