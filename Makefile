@@ -64,7 +64,6 @@ shell: build-dev
 			weasyprint-rest:latest										    \
 			$(CMD)
 
-
 push-all: build-prod
 	@echo "\n${BLUE}Pushing all images to all registries...${NC}\n"
 	@docker tag weasyprint-rest:latest $(DOCKER_REGISTRY):$(VERSION_NAME)
