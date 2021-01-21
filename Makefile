@@ -33,7 +33,7 @@ build-prod:
 	@sed                                     \
 	    -e 's|{NAME}|$(MODULE)|g'            \
 	    -e 's|{VERSION}|$(VERSION)|g'        \
-	    prod.Dockerfile | docker build -t WEASYPRINT_REST_LATEST -f- .
+	    prod.Dockerfile | docker build -t weasyprint-rest:latest -f- .
 
 build-dev:
 	@echo "\n${BLUE}Building Development image with labels:\n"
@@ -42,7 +42,7 @@ build-dev:
 	@sed                                 \
 	    -e 's|{NAME}|$(MODULE)|g'        \
 	    -e 's|{VERSION}|$(TAG)|g'        \
-	    dev.Dockerfile | docker build -t WEASYPRINT_REST_LATEST -f- .
+	    dev.Dockerfile | docker build -t weasyprint-rest:latest -f- .
 
 # Example: make shell CMD="-c 'date > datefile'"
 shell: build-dev
@@ -52,7 +52,7 @@ shell: build-dev
 			--rm                                                    \
 			--entrypoint /bin/bash                                  \
 			-u $$(id -u):$$(id -g)                                  \
-			WEASYPRINT_REST_LATEST										    \
+			weasyprint-rest:latest										    \
 			$(CMD)
 
 set-version:
@@ -68,14 +68,14 @@ set-version:
 push: set-version build-prod
 	@echo "\n${BLUE}Pushing image to "${REGISTRY}"...${NC}\n"
 	@if [ "${VERSION_NAME}" == 'latest']; then \
-		docker tag WEASYPRINT_REST_LATEST $(IMAGE):$(VERSION_PATCH) \
+		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_PATCH) \
 		docker push $(IMAGE):$(VERSION_PATCH) \
-		docker tag WEASYPRINT_REST_LATEST $(IMAGE):$(VERSION_MINOR) \
+		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MINOR) \
 		docker push $(IMAGE):$(VERSION_MINOR) \
-		docker tag WEASYPRINT_REST_LATEST $(IMAGE):$(VERSION_MAJOR) \
+		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MAJOR) \
 		docker push $(IMAGE):$(VERSION_MAJOR) \
 	fi
-	@docker tag WEASYPRINT_REST_LATEST $(IMAGE):$(VERSION_NAME)
+	@docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_NAME)
 	@docker push $(IMAGE):$(VERSION_NAME)
 
 cluster:
