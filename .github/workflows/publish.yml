@@ -26,12 +26,10 @@ jobs:
         login-server: docker.pkg.github.com
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    # - name: Docker Login (docker.io)
-    #   uses: azure/docker-login@v1
-    #   with:
-    #     username: ${{ secrets.DOCKERIO_USERNAME }}
-    #     password: ${{ secrets.DOCKERIO_PASSWORD }}
-    # - name: Log into Registry
-    #   run: echo "${{ secrets.REGISTRY_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-    - name: Push to GitHub Package Registry
+    - name: Docker Login (docker.io)
+      uses: azure/docker-login@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Push docker images
       run: make push VERSION=${{ env.RELEASE_VERSION }}

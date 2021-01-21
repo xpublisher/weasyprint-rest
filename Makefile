@@ -2,9 +2,8 @@
 MODULE := weasyprint-rest
 
 # Where to push the docker image.
-REGISTRIES ?= docker.pkg.github.com/xpublisher/weasyprint-rest/weasyprint-rest|xpublisher/weasyprint-rest
-REGISTRY ?= docker.pkg.github.com/xpublisher/weasyprint-rest/weasyprint-rest
-IMAGE := $(REGISTRY)
+DOCKER_REGISTRY ?= xpublisher/weasyprint-rest
+GITHUB_REGISTRY ?= docker.pkg.github.com/xpublisher/weasyprint-rest/weasyprint-rest
 
 VERSION_PATCH := ${VERSION}
 VERSION_MINOR := ${VERSION%.*}
@@ -65,31 +64,30 @@ shell: build-dev
 			weasyprint-rest:latest										    \
 			$(CMD)
 
-push: build-prod
-	@echo "\n${BLUE}Pushing image to "${REGISTRY}"...${NC}\n"
-	@if [ "${VERSION_NAME}" = 'latest' ]; then \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_PATCH) ; \
-		docker push $(IMAGE):$(VERSION_PATCH) ; \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MINOR) ; \
-		docker push $(IMAGE):$(VERSION_MINOR) ; \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MAJOR) ; \
-		docker push $(IMAGE):$(VERSION_MAJOR); \
-	fi
-	@docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_NAME)
-	@docker push $(IMAGE):$(VERSION_NAME)
 
 push-all: build-prod
-	@echo "\n${BLUE}Pushing all images to "${REGISTRY}"...${NC}\n"
+	@echo "\n${BLUE}Pushing all images to all registries...${NC}\n"
+	@docker tag weasyprint-rest:latest $(DOCKER_REGISTRY):$(VERSION_NAME)
+	@docker push $(DOCKER_REGISTRY):$(VERSION_NAME)
 	@if [ "${VERSION_NAME}" = 'latest' ]; then \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_PATCH) ; \
-		docker push $(IMAGE):$(VERSION_PATCH) ; \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MINOR) ; \
-		docker push $(IMAGE):$(VERSION_MINOR) ; \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MAJOR) ; \
-		docker push $(IMAGE):$(VERSION_MAJOR); \
+		docker tag weasyprint-rest:latest $(DOCKER_REGISTRY):$(VERSION_MAJOR) ; \
+		docker push $(DOCKER_REGISTRY):$(VERSION_MAJOR); \
+		docker tag weasyprint-rest:latest $(DOCKER_REGISTRY):$(VERSION_MINOR) ; \
+		docker push $(DOCKER_REGISTRY):$(VERSION_MINOR) ; \
+		docker tag weasyprint-rest:latest $(DOCKER_REGISTRY):$(VERSION_PATCH) ; \
+		docker push $(DOCKER_REGISTRY):$(VERSION_PATCH) ; \
 	fi
-	@docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_NAME)
-	@docker push $(IMAGE):$(VERSION_NAME)
+
+	@docker tag weasyprint-rest:latest $(GITHUB_REGISTRY):$(VERSION_NAME)
+	@docker push $(GITHUB_REGISTRY):$(VERSION_NAME)
+	@if [ "${VERSION_NAME}" = 'latest' ]; then \
+		docker tag weasyprint-rest:latest $(GITHUB_REGISTRY):$(VERSION_MAJOR) ; \
+		docker push $(GITHUB_REGISTRY):$(VERSION_MAJOR); \
+		docker tag weasyprint-rest:latest $(GITHUB_REGISTRY):$(VERSION_MINOR) ; \
+		docker push $(GITHUB_REGISTRY):$(VERSION_MINOR) ; \
+		docker tag weasyprint-rest:latest $(GITHUB_REGISTRY):$(VERSION_PATCH) ; \
+		docker push $(GITHUB_REGISTRY):$(VERSION_PATCH) ; \
+	fi
 
 cluster:
 	@if [ $$(kind get clusters | wc -l) = 0 ]; then \
