@@ -1,10 +1,9 @@
 # The binary to build (just the basename).
-MODULE := weasyprint
+MODULE := weasyprint-rest
 
 # Where to push the docker image.
-REGISTRY ?= docker.pkg.github.com/xpublisher/weasyprint-rest
-
-IMAGE := $(REGISTRY)/$(MODULE)
+REGISTRY ?= docker.pkg.github.com/xpublisher/weasyprint-rest/weasyprint-rest
+IMAGE := $(REGISTRY)
 
 # This version-strategy uses git tags to set the version string
 TAG := $(shell git describe --tags --always --dirty)
@@ -34,8 +33,7 @@ build-prod:
 	@sed                                     \
 	    -e 's|{NAME}|$(MODULE)|g'            \
 	    -e 's|{VERSION}|$(VERSION)|g'        \
-	    prod.Dockerfile | docker build -t $(IMAGE):$(VERSION) -f- .
-
+	    prod.Dockerfile | docker build -t WEASYPRINT_REST_LATEST -f- .
 
 build-dev:
 	@echo "\n${BLUE}Building Development image with labels:\n"
@@ -44,7 +42,7 @@ build-dev:
 	@sed                                 \
 	    -e 's|{NAME}|$(MODULE)|g'        \
 	    -e 's|{VERSION}|$(TAG)|g'        \
-	    dev.Dockerfile | docker build -t $(IMAGE):$(TAG) -f- .
+	    dev.Dockerfile | docker build -t WEASYPRINT_REST_LATEST -f- .
 
 # Example: make shell CMD="-c 'date > datefile'"
 shell: build-dev
@@ -54,13 +52,31 @@ shell: build-dev
 			--rm                                                    \
 			--entrypoint /bin/bash                                  \
 			-u $$(id -u):$$(id -g)                                  \
-			$(IMAGE):$(TAG)										    \
+			WEASYPRINT_REST_LATEST										    \
 			$(CMD)
 
-# Example: make push VERSION=0.0.2
-push: build-prod
-	@echo "\n${BLUE}Pushing image to GitHub Docker Registry...${NC}\n"
-	@docker push $(IMAGE):$(VERSION)
+set-version:
+	@if [ "${VERSION}" == 'main' ]; then \
+		VERSION_NAME=unstable; \
+	else \
+		VERSION_PATCH="${VERSION}"; \
+		VERSION_MINOR="${VERSION%.*}"; \
+		VERSION_MAJOR="${VERSION%%.*}"; \
+		VERSION_NAME="latest"; \
+	fi
+
+push: set-version build-prod
+	@echo "\n${BLUE}Pushing image to "${REGISTRY}"...${NC}\n"
+	@if [ "${VERSION_NAME}" == 'latest']; then \
+		docker tag WEASYPRINT_REST_LATEST $(IMAGE):$(VERSION_PATCH) \
+		docker push $(IMAGE):$(VERSION_PATCH) \
+		docker tag WEASYPRINT_REST_LATEST $(IMAGE):$(VERSION_MINOR) \
+		docker push $(IMAGE):$(VERSION_MINOR) \
+		docker tag WEASYPRINT_REST_LATEST $(IMAGE):$(VERSION_MAJOR) \
+		docker push $(IMAGE):$(VERSION_MAJOR) \
+	fi
+	@docker tag WEASYPRINT_REST_LATEST $(IMAGE):$(VERSION_NAME)
+	@docker push $(IMAGE):$(VERSION_NAME)
 
 cluster:
 	@if [ $$(kind get clusters | wc -l) = 0 ]; then \
