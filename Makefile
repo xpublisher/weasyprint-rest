@@ -57,7 +57,7 @@ shell: build-dev
 
 set-version:
 	@echo "\n${BLUE}Updating versions for "${VERSION}"...${NC}\n"
-	@if [ "${VERSION}" == 'main' ]; then \
+	@if [ "${VERSION}" = 'main' ]; then \
 		VERSION_NAME=unstable; \
 	else \
 		VERSION_PATCH="${VERSION}"; \
@@ -68,7 +68,7 @@ set-version:
 
 push: set-version build-prod
 	@echo "\n${BLUE}Pushing image to "${REGISTRY}"...${NC}\n"
-	@if [ "${VERSION_NAME}" == 'latest' ]; then \
+	@if [ "${VERSION_NAME}" = 'latest' ]; then \
 		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_PATCH) \
 		docker push $(IMAGE):$(VERSION_PATCH) \
 		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MINOR) \
