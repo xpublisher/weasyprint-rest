@@ -56,6 +56,7 @@ shell: build-dev
 			$(CMD)
 
 set-version:
+	@echo "\n${BLUE}Updating versions for "${VERSION}"...${NC}\n"
 	@if [ "${VERSION}" == 'main' ]; then \
 		VERSION_NAME=unstable; \
 	else \
