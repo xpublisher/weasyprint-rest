@@ -69,12 +69,12 @@ set-version:
 push: set-version build-prod
 	@echo "\n${BLUE}Pushing image to "${REGISTRY}"...${NC}\n"
 	@if [ "${VERSION_NAME}" = 'latest' ]; then \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_PATCH); \
-		docker push $(IMAGE):$(VERSION_PATCH); \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MINOR); \
-		docker push $(IMAGE):$(VERSION_MINOR); \
-		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MAJOR); \
-		docker push $(IMAGE):$(VERSION_MAJOR); \
+		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_PATCH) ; \
+		docker push $(IMAGE):$(VERSION_PATCH) ; \
+		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MINOR) ; \
+		docker push $(IMAGE):$(VERSION_MINOR) ; \
+		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MAJOR) ; \
+		docker push $(IMAGE):$(VERSION_MAJOR ); \
 	fi
 	@docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_NAME)
 	@docker push $(IMAGE):$(VERSION_NAME)
