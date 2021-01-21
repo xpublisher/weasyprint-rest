@@ -5,6 +5,15 @@ MODULE := weasyprint-rest
 REGISTRY ?= docker.pkg.github.com/xpublisher/weasyprint-rest/weasyprint-rest
 IMAGE := $(REGISTRY)
 
+VERSION_PATCH := ${VERSION}
+VERSION_MINOR := ${VERSION%.*}
+VERSION_MAJOR := ${VERSION%%.*}
+ifeq ($(VERSION), main)
+	VERSION_NAME := "unstable"
+else
+	VERSION_NAME := "latest"
+endif
+
 # This version-strategy uses git tags to set the version string
 TAG := $(shell git describe --tags --always --dirty)
 
@@ -55,18 +64,7 @@ shell: build-dev
 			weasyprint-rest:latest										    \
 			$(CMD)
 
-set-version:
-	@echo "\n${BLUE}Updating versions for "${VERSION}"...${NC}\n"
-	@if [ "${VERSION}" = 'main' ]; then \
-		VERSION_NAME=unstable; \
-	else \
-		VERSION_PATCH="${VERSION}"; \
-		VERSION_MINOR="${VERSION%.*}"; \
-		VERSION_MAJOR="${VERSION%%.*}"; \
-		VERSION_NAME="latest"; \
-	fi
-
-push: set-version build-prod
+push: build-prod
 	@echo "\n${BLUE}Pushing image to "${REGISTRY}"...${NC}\n"
 	@if [ "${VERSION_NAME}" = 'latest' ]; then \
 		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_PATCH) ; \
@@ -74,7 +72,7 @@ push: set-version build-prod
 		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MINOR) ; \
 		docker push $(IMAGE):$(VERSION_MINOR) ; \
 		docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_MAJOR) ; \
-		docker push $(IMAGE):$(VERSION_MAJOR ); \
+		docker push $(IMAGE):$(VERSION_MAJOR); \
 	fi
 	@docker tag weasyprint-rest:latest $(IMAGE):$(VERSION_NAME)
 	@docker push $(IMAGE):$(VERSION_NAME)
