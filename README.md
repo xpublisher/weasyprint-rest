@@ -5,11 +5,8 @@
 		</a>
 	</p>
 	<p>
-		<a href="https://github.com/xpublisher/weasyprint-rest/actions?query=workflow%3A%22Build%2C+Test%2C+Lint%22">
-			<img src="https://github.com/xpublisher/weasyprint-rest/workflows/Build,%20Test,%20Lint/badge.svg" alt="Build, Test, Lint"/>
-		</a>
-		<a href="https://github.com/xpublisher/weasyprint-rest/actions?query=Publish">
-			<img src="https://github.com/xpublisher/weasyprint-rest/workflows/Publish/badge.svg" alt="Publish" />
+		<a href="https://github.com/xpublisher/weasyprint-rest/actions?query=workflow%3A%22Build%2C+Test%2C+Lint%2C+Publish%22">
+			<img src="https://github.com/xpublisher/weasyprint-rest/workflows/Build,%20Test,%20Lint/badge.svg" alt="Build, Test, Lint, Publish"/>
 		</a>
     <a href="https://codeclimate.com/github/xpublisher/weasyprint-rest/maintainability">
       <img src="https://api.codeclimate.com/v1/badges/f761c1ed2e2694f98e9c/maintainability" alt="Maintainability" />
@@ -65,6 +62,8 @@ http://localhost:5000/api/v1.0/print --output report.pdf
 ```
 
 ## Configuration
+
+
 
 All configurations are set via environment variables.
 
