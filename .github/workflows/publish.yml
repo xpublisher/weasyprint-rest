@@ -7,9 +7,10 @@ on:
       - completed
     branches:
       - main
+
+  push:
     tags:
-      - '*'
-  # push:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   push:
