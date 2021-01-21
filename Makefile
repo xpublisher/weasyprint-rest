@@ -5,9 +5,10 @@ MODULE := weasyprint-rest
 DOCKER_REGISTRY ?= xpublisher/weasyprint-rest
 GITHUB_REGISTRY ?= docker.pkg.github.com/xpublisher/weasyprint-rest/weasyprint-rest
 
-VERSION_PATCH := ${VERSION}
-VERSION_MINOR := ${VERSION%.*}
-VERSION_MAJOR := ${VERSION%%.*}
+# VERISON = 0.1.0
+VERSION_PATCH := ${VERSION} # 0.1.0
+VERSION_MINOR := $(shell echo "${VERSION}" | sed -E 's/.[0-9]+$$//') # 0.1
+VERSION_MAJOR := $(shell echo "${VERSION}" | sed -E 's/.[0-9].[0-9]+$$//') # 0.1
 ifeq ($(VERSION), main)
 	VERSION_NAME := "unstable"
 else
@@ -19,6 +20,11 @@ TAG := $(shell git describe --tags --always --dirty)
 
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
+
+echo:
+	@echo ${VERSION_PATCH}
+	@echo ${VERSION_MINOR}
+	@echo ${VERSION_MAJOR}
 
 run:
 	@python -m $(MODULE)
