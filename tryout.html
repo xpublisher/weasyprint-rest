@@ -8,20 +8,24 @@
       <label for="html">HTML File:</label><br>
       <input type="file" id="html" name="html"><br>
 
-      <label for="css">CSS Files:</label><br>
-      <input type="file" id="css" name="css" multiple><br>
+      <label for="style">CSS Files:</label><br>
+      <input type="file" id="style" name="style[]" multiple><br>
 
-      <label for="attachment">Attachment Files:</label><br>
-      <input type="file" id="attachment" name="attachment" multiple><br>
+      <label for="asset">Asset Files:</label><br>
+      <input type="file" id="asset" name="asset[]" multiple><br>
+
+      <label for="template">Template:</label><br>
+      <select name="template" id="template">
+        <option value="">None</option>
+        <option value="report">report</option>
+      </select><br>
 
       <label for="mode">Mode:</label><br>
       <select name="mode" id="mode">
         <option value="pdf">PDF</option>
         <option value="png">PNG</option>
       </select>
-
       <hr>
-
       <input type="submit" value="Submit">
     </form> 
   </body>

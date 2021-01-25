@@ -1,12 +1,7 @@
 import pytest
-from weasyprint_rest.app import create_app
-
-_app = None
+from weasyprint_rest.app import app as application
 
 
 @pytest.fixture
 def app():
-  global _app  # pylint: disable=global-statement
-  if _app is None:
-    _app = create_app()
-  return _app
+  return application()

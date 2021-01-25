@@ -51,20 +51,21 @@ Then you can use the following command to generate the report.pdf from the offic
 ```bash
 curl  \
 -F 'html=@report.html' \
--F 'css=@report.css' \
--F "attachment=@FiraSans-Bold.otf" \
--F "attachment=@FiraSans-Italic.otf" \
--F "attachment=@FiraSans-LightItalic.otf" \
--F "attachment=@FiraSans-Light.otf" \
--F "attachment=@FiraSans-Regular.otf" \
--F "attachment=@heading.svg" \
--F "attachment=@internal-links.svg" \
--F "attachment=@multi-columns.svg" \
--F "attachment=@report-cover.jpg" \
--F "attachment=@style.svg" \
--F "attachment=@table-content.svg" \
--F "attachment=@thumbnail.png" \
-http://localhost:5000/api/v1.0/print --output report.pdf
+-F 'style=@report.css' \
+-F "asset[]=@FiraSans-Bold.otf" \
+-F "asset[]=@FiraSans-Italic.otf" \
+-F "asset[]=@FiraSans-LightItalic.otf" \
+-F "asset[]=@FiraSans-Light.otf" \
+-F "asset[]=@FiraSans-Regular.otf" \
+-F "asset[]=@heading.svg" \
+-F "asset[]=@internal-links.svg" \
+-F "asset[]=@multi-columns.svg" \
+-F "asset[]=@report-cover.jpg" \
+-F "asset[]=@style.svg" \
+-F "asset[]=@table-content.svg" \
+-F "asset[]=@thumbnail.png" \
+-F "mode=png" \
+http://localhost:5000/api/v1.0/print --output report.png
 ```
 
 ## Configuration
@@ -122,12 +123,15 @@ POST /api/v1.0/print
 
 #### Parameters
 
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `html` | `file` | __Required__. HTML file to convert |
-| `mode` | `"pdf" or "png"` | __Optional__. Controls whether a PDF or PNG is rendered. The default is `pdf` |
-| `css` | `file or file[]` | __Optional__. CSS to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `attachment`.|
-| `attachment` | `file or file[]` | __Optional__. Attachments which are referenced in the html. This can be images, CSS or fonts. The name must be 1:1 the same as used in the files. |
+| Parameter  | Type             |      |
+|-:----------|-:----------------|-:----|
+| `html`     | `file or string` | __Required__. HTML file to convert |
+| `mode`     | `"pdf" or "png"` | __Optional__. Controls whether a PDF or PNG is rendered. The default is `pdf` |
+| `template` | `string`         | __Optional__. Template ID for the use of predefined templates |
+| `style`    | `file or string` | __Optional__. Style to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used.|
+| `style[]`  | `file or file[]` | __Optional__. Multiple styles to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used.|
+| `asset[]`  | `file or file[]` | __Optional__. Assets which are referenced in the html. This can be images, CSS or fonts. The name must be 1:1 the same as used in the files. |
+
 
 #### Response
 

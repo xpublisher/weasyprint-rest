@@ -9,4 +9,6 @@ services:
     environment: 
       API_KEY:
       ALLOWED_URL_PATTERN: ^https?://(.*\.)google.com/.*$$
+    volumes:
+      - ./tests/resources/templates:/data/templates
 

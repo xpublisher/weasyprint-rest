@@ -31,3 +31,15 @@ def get_secret_key():
 
 def is_debug_mode():
   return is_true(get("ENABLE_DEBUG_MODE"))
+
+
+def is_cors_enabled():
+  return is_true(get("ENABLE_CORS", "true"))
+
+
+def get_cors_origins():
+  return get("CORS_ORIGINS", "*")
+
+
+def get_template_directory():
+  return get("TEMPLATE_DIRECTORY", "/data/templates")
