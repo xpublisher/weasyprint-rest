@@ -9,11 +9,12 @@ import logging
 
 from flask import Flask, abort, request
 from flask_restful import Api
+from flask_cors import CORS
 from functools import wraps
 
 from ..env import (
-  get_api_key, get_allowed_url_pattern, get_blocked_url_pattern,
-  get_max_upload_size, is_debug_mode, get_secret_key
+  get_api_key, get_allowed_url_pattern, get_blocked_url_pattern, get_max_upload_size,
+  is_debug_mode, get_secret_key, is_cors_enabled, get_cors_origins
 )
 
 _app = None
@@ -23,6 +24,9 @@ _api = None
 def create_app():
   global _app, _api
   _app = Flask(__name__)
+
+  if is_cors_enabled():
+    CORS(_app, resources={r"/api/*": {"origins": get_cors_origins()}})
 
   # set configurations
   _app.config['MAX_CONTENT_LENGTH'] = get_max_upload_size()

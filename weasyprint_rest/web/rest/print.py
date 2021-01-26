@@ -2,31 +2,53 @@
 # -*- coding: utf-8 -*-
 
 import os
+import io
 
+from werkzeug.datastructures import FileStorage
 from flask import request, abort, make_response
 from flask_restful import Resource
 
 from ..util import authenticate
 from ...print.weasyprinter import WeasyPrinter
+from ...print.template_loader import TemplateLoader
+from ...print.template import Template
 
 
-def parse_request_content():
+def _parse_request_argument(name, default=None, parse_type=None, content_type=None, file_name=None):
   form = request.form
   args = request.args
   files = request.files
 
-  if "mode" in form:
-    mode = form["mode"]
-  elif "mode" in args:
-    mode = args["mode"]
-  else:
-    mode = "pdf"
+  content = default
+  if name in form:
+    content = form.getlist(name) if name.endswith("[]") else form[name]
+  elif name in args:
+    content = args.getlist(name) if name.endswith("[]") else args[name]
+  elif name in files:
+    content = files.getlist(name) if name.endswith("[]") else files[name]
 
-  html_files = files["html"]
-  css_files = files.getlist("css") if "css" in files else []
-  attachment_files = files.getlist("attachment") if "attachment" in files else []
+  if parse_type == "file" and isinstance(content, str):
+    return FileStorage(
+      stream=io.BytesIO(bytes(content, encoding='utf8')),
+      filename=file_name,
+      content_type=content_type
+    )
 
-  return mode, html_files, css_files, attachment_files
+  if content == default and name.endswith("[]"):
+    content = _parse_request_argument(name[:-2], default, parse_type, content_type, file_name)
+    if not isinstance(content, list):
+      return [content]
+
+  return content
+
+
+def _build_template():
+  styles = _parse_request_argument("style[]", [], "file", "text/css", "style.css")
+  assets = _parse_request_argument("asset[]", [])
+  template_name = _parse_request_argument("template", None)
+  base_template = TemplateLoader().get(template_name)
+
+  return Template(styles=styles, assets=assets, base_template=base_template)
 
 
 class PrintAPI(Resource):
@@ -36,14 +58,14 @@ class PrintAPI(Resource):
     super(PrintAPI, self).__init__()
 
   def post(self):
-    # check if the post request has the file part
-    if 'html' not in request.files:
-      return abort(422)
+    mode = _parse_request_argument("mode", "pdf")
+    html = _parse_request_argument("html", None, "file", "text/html", "document.html")
+    if html is None:
+      return abort(422, description="Required argument 'html' is missing.")
 
-    # get arguments and convert to pdf
-    mode, html, css, attachments = parse_request_content()
+    template = _build_template()
 
-    printer = WeasyPrinter(html, css, attachments)
+    printer = WeasyPrinter(html, template=template)
     content = printer.write(mode)
 
     # build response

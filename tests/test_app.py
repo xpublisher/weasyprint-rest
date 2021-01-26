@@ -25,7 +25,7 @@ def test_post_print_png(client):
   res = client.post(
     "/api/v1.0/print",
     content_type='multipart/form-data',
-    data=get_pdf_input(),
+    data=get_print_input(),
     headers=auth_header()
   )
   assert res.status_code == 200
@@ -34,15 +34,15 @@ def test_post_print_png(client):
   assert verify_output(data)
 
 
-def test_post_print_png_css_attachment(client):
-  req_data = get_pdf_input()
-  req_data['attachment'].append(req_data['css'])
-  del req_data['css']
+def test_post_print_png_css_asset(client):
+  req_data = get_print_input(False)
+  req_data.get("asset[]").append(req_data["style"])
+  del req_data["style"]
 
   res = client.post(
     "/api/v1.0/print",
     content_type='multipart/form-data',
-    data=get_pdf_input(),
+    data=req_data,
     headers=auth_header()
   )
   assert res.status_code == 200
@@ -52,7 +52,7 @@ def test_post_print_png_css_attachment(client):
 
 
 def test_post_print_pdf(client):
-  data = get_pdf_input()
+  data = get_print_input()
   data["mode"] = "pdf"
   res = client.post(
     "/api/v1.0/print",
@@ -64,7 +64,7 @@ def test_post_print_pdf(client):
 
 
 def test_post_print_no_mode(client):
-  data = get_pdf_input()
+  data = get_print_input()
   del data["mode"]
   res = client.post(
     "/api/v1.0/print",
@@ -76,7 +76,7 @@ def test_post_print_no_mode(client):
 
 
 def test_post_print_mode_as_argument(client):
-  data = get_pdf_input()
+  data = get_print_input()
   del data["mode"]
   res = client.post(
     "/api/v1.0/print?mode=png",
@@ -88,7 +88,7 @@ def test_post_print_mode_as_argument(client):
 
 
 def test_post_print_foreign(client):
-  data = get_pdf_input()
+  data = get_print_input()
   del data["mode"]
   res = client.post(
     "/api/v1.0/print?mode=png",
@@ -103,7 +103,7 @@ def test_post_print_foreign_url_deny(client):
   res = client.post(
     "/api/v1.0/print",
     content_type='multipart/form-data',
-    data=get_pdf_input(),
+    data=get_print_input(),
     headers=auth_header()
   )
   assert res.status_code == 200
@@ -117,7 +117,7 @@ def test_post_print_foreign_url_allow(client, monkeypatch):
   res = client.post(
     "/api/v1.0/print",
     content_type='multipart/form-data',
-    data=get_pdf_input(),
+    data=get_print_input(),
     headers=auth_header()
   )
 
@@ -143,10 +143,10 @@ def test_post_print_html_missing_params(client):
   assert res.status_code == 422
 
 
-def test_post_print_html_without_css_attachments(client):
-  data = get_pdf_input()
-  data["css"] = []
-  data["attachment"] = []
+def test_post_print_html_without_css_assets(client):
+  data = get_print_input()
+  del data["style"]
+  data["asset[]"] = []
   res = client.post(
     "/api/v1.0/print",
     content_type='multipart/form-data',
@@ -156,28 +156,36 @@ def test_post_print_html_without_css_attachments(client):
   assert res.status_code == 200
 
 
-def get_pdf_input():
+def get_print_input(use_template=True):
   input_dir = get_path("./resources/report")
 
-  return {
+  data = {
     "mode": "png",
     "html": read_file(input_dir, "report.html"),
-    "css": read_file(input_dir, "report.css"),
-    "attachment": [
-      read_file(input_dir, "FiraSans-Bold.otf"),
-      read_file(input_dir, "FiraSans-Italic.otf"),
-      read_file(input_dir, "FiraSans-LightItalic.otf"),
-      read_file(input_dir, "FiraSans-Light.otf"),
-      read_file(input_dir, "FiraSans-Regular.otf"),
-      read_file(input_dir, "heading.svg"),
-      read_file(input_dir, "internal-links.svg"),
-      read_file(input_dir, "multi-columns.svg"),
-      read_file(input_dir, "report-cover.jpg"),
-      read_file(input_dir, "style.svg"),
-      read_file(input_dir, "table-content.svg"),
-      read_file(input_dir, "thumbnail.png")
-    ]
+    "style": read_file(input_dir, "report.css"),
   }
+
+  if use_template:
+    data["template"] = "report"
+  else:
+    asset_dir = get_path("./resources/templates/report")
+    data.update({
+      "asset[]": [
+        read_file(asset_dir, "FiraSans-Bold.otf"),
+        read_file(asset_dir, "FiraSans-Italic.otf"),
+        read_file(asset_dir, "FiraSans-LightItalic.otf"),
+        read_file(asset_dir, "FiraSans-Light.otf"),
+        read_file(asset_dir, "FiraSans-Regular.otf"),
+        read_file(asset_dir, "heading.svg"),
+        read_file(asset_dir, "internal-links.svg"),
+        read_file(asset_dir, "multi-columns.svg"),
+        read_file(asset_dir, "report-cover.jpg"),
+        read_file(asset_dir, "style.svg"),
+        read_file(asset_dir, "table-content.svg")
+      ]
+    })
+
+  return data
 
 
 def read_file(path, filename):
@@ -185,7 +193,7 @@ def read_file(path, filename):
   return FileStorage(
     stream=open(abs_path, "rb"),
     filename=filename,
-    content_type=mimetypes.guess_type(filename),
+    content_type=mimetypes.guess_type(filename)[0],
   )
 
 
