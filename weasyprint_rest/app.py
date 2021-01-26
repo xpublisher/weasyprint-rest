@@ -11,38 +11,40 @@ from .env import (
   get_secret_key, is_cors_enabled, get_cors_origins
 )
 
-_app = None
-_api = None
+_global = {
+  "app": None,
+  "api": None
+}
 
 
 def create_app():
-  global _app, _api
-  _app = Flask(__name__)
+  local_app = Flask(__name__)
 
   if is_cors_enabled():
-    CORS(_app, resources={r"/api/*": {"origins": get_cors_origins()}})
+    CORS(local_app, resources={r"/api/*": {"origins": get_cors_origins()}})
 
   # set configurations
-  _app.config['MAX_CONTENT_LENGTH'] = get_max_upload_size()
-  _app.config['DEBUG'] = is_debug_mode()
-  _app.config['MAIL_ENABLED'] = False
-  _app.config['SECRET_KEY'] = get_secret_key()
+  local_app.config['MAX_CONTENT_LENGTH'] = get_max_upload_size()
+  local_app.config['DEBUG'] = is_debug_mode()
+  local_app.config['MAIL_ENABLED'] = False
+  local_app.config['SECRET_KEY'] = get_secret_key()
 
-  _api = Api(_app)
+  local_api = Api(local_app)
 
-  register_routes(_api)
+  register_routes(local_api)
   TemplateLoader().load(get_template_directory())
+
+  _global["app"] = local_app
+  _global["api"] = local_api
 
 
 def app():
-  global _app
-  if _app is None:  # pragma: no cover
+  if _global["app"] is None:  # pragma: no cover
     create_app()
-  return _app
+  return _global["app"]
 
 
 def api():
-  global _api
-  if _api is None:  # pragma: no cover
+  if _global["api"] is None:  # pragma: no cover
     create_app()
-  return _api
+  return _global["api"]

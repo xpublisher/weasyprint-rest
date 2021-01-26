@@ -4,7 +4,7 @@
 import os
 import io
 
-from werkzeug.datastructures import MultiDict, FileStorage, ImmutableMultiDict
+from werkzeug.datastructures import FileStorage
 from flask import request, abort, make_response
 from flask_restful import Resource
 
@@ -28,7 +28,11 @@ def _parse_request_argument(name, default=None, parse_type=None, content_type=No
     content = files.getlist(name) if name.endswith("[]") else files[name]
 
   if parse_type == "file" and isinstance(content, str):
-    return FileStorage(stream = io.BytesIO(bytes(content, encoding='utf8')), filename=file_name, content_type=content_type)
+    return FileStorage(
+      stream=io.BytesIO(bytes(content, encoding='utf8')),
+      filename=file_name,
+      content_type=content_type
+    )
 
   if content == default and name.endswith("[]"):
     content = _parse_request_argument(name[:-2], default, parse_type, content_type, file_name)

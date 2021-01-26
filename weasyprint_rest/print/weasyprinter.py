@@ -1,8 +1,9 @@
-import os, logging
+import os
 
 from weasyprint import HTML
 
 from .template import Template
+
 
 class WeasyPrinter():
 

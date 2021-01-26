@@ -4,6 +4,9 @@ services:
     build: 
       context: .
       dockerfile: dev.Dockerfile
+      args: 
+        - ENABLE_BUILD_TEST=true
+        - ENABLE_BUILD_LINT=true
     ports: 
       - 5000:5000
     environment: 
@@ -11,4 +14,3 @@ services:
       ALLOWED_URL_PATTERN: ^https?://(.*\.)google.com/.*$$
     volumes:
       - ./tests/resources/templates:/data/templates
-

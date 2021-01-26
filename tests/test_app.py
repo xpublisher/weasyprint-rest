@@ -171,18 +171,19 @@ def get_print_input(use_template=True):
     asset_dir = get_path("./resources/templates/report")
     data.update({
       "asset[]": [
-      read_file(asset_dir, "FiraSans-Bold.otf"),
-      read_file(asset_dir, "FiraSans-Italic.otf"),
-      read_file(asset_dir, "FiraSans-LightItalic.otf"),
-      read_file(asset_dir, "FiraSans-Light.otf"),
-      read_file(asset_dir, "FiraSans-Regular.otf"),
-      read_file(asset_dir, "heading.svg"),
-      read_file(asset_dir, "internal-links.svg"),
-      read_file(asset_dir, "multi-columns.svg"),
-      read_file(asset_dir, "report-cover.jpg"),
-      read_file(asset_dir, "style.svg"),
-      read_file(asset_dir, "table-content.svg")
-    ]})
+        read_file(asset_dir, "FiraSans-Bold.otf"),
+        read_file(asset_dir, "FiraSans-Italic.otf"),
+        read_file(asset_dir, "FiraSans-LightItalic.otf"),
+        read_file(asset_dir, "FiraSans-Light.otf"),
+        read_file(asset_dir, "FiraSans-Regular.otf"),
+        read_file(asset_dir, "heading.svg"),
+        read_file(asset_dir, "internal-links.svg"),
+        read_file(asset_dir, "multi-columns.svg"),
+        read_file(asset_dir, "report-cover.jpg"),
+        read_file(asset_dir, "style.svg"),
+        read_file(asset_dir, "table-content.svg")
+      ]
+    })
 
   return data
 

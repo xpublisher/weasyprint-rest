@@ -1,7 +1,8 @@
 import re
-import os, logging, mimetypes
+import os
+import mimetypes
 
-from weasyprint import HTML, CSS, default_url_fetcher
+from weasyprint import CSS, default_url_fetcher
 from weasyprint.fonts import FontConfiguration
 
 from ..web.util import check_url_access
@@ -66,7 +67,7 @@ class Template:
 
     if file is None:  # pragma: no cover
       raise FileNotFoundError('File %r was not found.' % file_path)
-    
+
     mimetype = file.mimetype
     if mimetype == "application/octet-stream":
       mimetype = mimetypes.guess_type(file_path)[0]
