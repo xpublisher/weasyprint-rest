@@ -11,7 +11,6 @@ RUN /venv/bin/pip install -r /requirements.txt
 FROM builder-venv AS tester
 
 RUN /venv/bin/pip install pylint flake8 bandit
-ENV TEMPLATE_DIRECTORY="/app/tests/resources/templates"
 ENV PATH="/venv/bin:${PATH}"
 
 COPY . /app
