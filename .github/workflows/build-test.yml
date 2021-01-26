@@ -12,6 +12,8 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
+    env:
+      TEMPLATE_DIRECTORY: ./tests/resources/templates
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-python@v1
