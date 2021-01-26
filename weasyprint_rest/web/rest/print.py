@@ -82,7 +82,7 @@ class PrintAPI(Resource):
     mode = _parse_request_argument("mode", "pdf")
     html = _parse_request_argument("html", None, "file", {
       "content_type": "text/html",
-      "file_type": "document.html"
+      "file_name": "document.html"
     })
 
     if html is None:
