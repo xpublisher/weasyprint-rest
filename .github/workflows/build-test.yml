@@ -51,6 +51,8 @@ jobs:
     needs: test
     if: github.event_name == 'push' && (contains(github.ref, 'refs/tags/') || contains(github.ref, 'refs/heads/main'))
     runs-on: ubuntu-latest
+    env:
+      TEMPLATE_DIRECTORY: ./tests/resources/templates
     steps:
     - uses: actions/checkout@v1
     - name: Set env
