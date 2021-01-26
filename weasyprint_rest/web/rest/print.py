@@ -14,20 +14,30 @@ from ...print.template_loader import TemplateLoader
 from ...print.template import Template
 
 
-def _parse_request_argument(name, default=None, parse_type=None, content_type=None, file_name=None):
+def _get_request_list_or_value(request_dict, name):
+  return request_dict.getlist(name) if name.endswith("[]") else request_dict[name]
+
+
+def _get_request_argument(name, default=None):
   form = request.form
   args = request.args
   files = request.files
 
-  content = default
   if name in form:
-    content = form.getlist(name) if name.endswith("[]") else form[name]
+    return _get_request_list_or_value(form, name)
   elif name in args:
-    content = args.getlist(name) if name.endswith("[]") else args[name]
+    return _get_request_list_or_value(args, name)
   elif name in files:
-    content = files.getlist(name) if name.endswith("[]") else files[name]
+    return _get_request_list_or_value(files, name)
+  return default
+
+
+def _parse_request_argument(name, default=None, parse_type=None, parse_args=None):
+  content = _get_request_argument(name, default)
 
   if parse_type == "file" and isinstance(content, str):
+    content_type = _may_get_dict_value(parse_args, "content_type")
+    file_name = _may_get_dict_value(parse_args, "file_name")
     return FileStorage(
       stream=io.BytesIO(bytes(content, encoding='utf8')),
       filename=file_name,
@@ -35,15 +45,26 @@ def _parse_request_argument(name, default=None, parse_type=None, content_type=No
     )
 
   if content == default and name.endswith("[]"):
-    content = _parse_request_argument(name[:-2], default, parse_type, content_type, file_name)
+    content = _parse_request_argument(name[:-2], default, parse_type, parse_args)
     if not isinstance(content, list):
       return [content]
 
   return content
 
 
+def _may_get_dict_value(dict_values, key, default=None):
+  if dict_values is None:
+    return default
+  if key not in dict_values:
+    return default
+  return dict_values[key]
+
+
 def _build_template():
-  styles = _parse_request_argument("style[]", [], "file", "text/css", "style.css")
+  styles = _parse_request_argument("style[]", [], "file", {
+    "content_type": "text/css",
+    "file_name": "style.css"
+  })
   assets = _parse_request_argument("asset[]", [])
   template_name = _parse_request_argument("template", None)
   base_template = TemplateLoader().get(template_name)
@@ -59,7 +80,11 @@ class PrintAPI(Resource):
 
   def post(self):
     mode = _parse_request_argument("mode", "pdf")
-    html = _parse_request_argument("html", None, "file", "text/html", "document.html")
+    html = _parse_request_argument("html", None, "file", {
+      "content_type": "text/html",
+      "file_type": "document.html"
+    })
+
     if html is None:
       return abort(422, description="Required argument 'html' is missing.")
 

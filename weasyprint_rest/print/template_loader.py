@@ -61,36 +61,36 @@ class TemplateLoader:
       return definition["template"]
 
     def _prepare_definition(self, definition):
+      base_dir = definition["base_dir"]
+
       if "styles" not in definition:
-        definition["styles"] = [
-          name for name in glob.glob(os.path.join(definition["base_dir"], "**/*.css"), recursive=True)
-        ]
+        definition["styles"] = self._detect_file_locations(base_dir, "**/*.css")
 
       if "assets" not in definition:
-        definition["assets"] = [
-          name for name in glob.glob(os.path.join(definition["base_dir"], "**/*"), recursive=True)
-        ]
+        definition["assets"] = self._detect_file_locations(base_dir, "**/*")
 
       definition["prepared"] = True
+
+    def _detect_file_locations(self, base_dir, search_pattern):
+      return [
+        name for name in glob.glob(os.path.join(base_dir, search_pattern), recursive=True)
+      ]
 
     def _build_template(self, definition):
       base_dir = definition["base_dir"]
 
-      styles = []
-      for style_file in definition["styles"]:
-        styles.append(FileStorage(
-          stream=open(style_file, "rb"),
-          filename=os.path.relpath(style_file, base_dir),
-          content_type=mimetypes.guess_type(style_file)[0]
-        ))
-
-      assets = []
-      for asset_style in definition["assets"]:
-        assets.append(FileStorage(
-          stream=open(asset_style, "rb"),
-          filename=os.path.relpath(asset_style, base_dir),
-          content_type=mimetypes.guess_type(asset_style)[0]
-        ))
+      styles = self._read_files(base_dir, definition["styles"])
+      assets = self._read_files(base_dir, definition["assets"])
 
       template = Template(styles=styles, assets=assets)
       definition["template"] = template
+
+    def _read_files(self, base_dir, file_locations):
+      files = []
+      for file in file_locations:
+        files.append(FileStorage(
+          stream=open(file, "rb"),
+          filename=os.path.relpath(file, base_dir),
+          content_type=mimetypes.guess_type(file)[0]
+        ))
+      return files
