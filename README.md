@@ -125,9 +125,9 @@ POST /api/v1.0/print
 
 | Parameter  | Type             |      |
 |-:----------|-:----------------|-:----|
-| `html`     | `file or string` | __Required__. HTML file to convert |
-| `mode`     | `"pdf" or "png"` | __Optional__. Controls whether a PDF or PNG is rendered. The default is `pdf` |
-| `template` | `string`         | __Optional__. Template ID for the use of predefined templates |
+| `html`     | `file or string` | __Required__. HTML file to convert. |
+| `mode`     | `"pdf" or "png"` | __Optional__. Controls whether a PDF or PNG is rendered. The default is `pdf`. |
+| `template` | `string`         | __Optional__. Template ID for the use of predefined templates. |
 | `style`    | `file or string` | __Optional__. Style to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used.|
 | `style[]`  | `file or file[]` | __Optional__. Multiple styles to apply to the `html`. This should only be used if the CSS is not referenced in the html. If it is included via HTML link, it should be passed as `asset`. Only either `style` or `style[]` can be used.|
 | `asset[]`  | `file or file[]` | __Optional__. Assets which are referenced in the html. This can be images, CSS or fonts. The name must be 1:1 the same as used in the files. |
