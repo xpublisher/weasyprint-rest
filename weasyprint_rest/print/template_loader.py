@@ -7,6 +7,7 @@ import mimetypes
 from werkzeug.datastructures import FileStorage
 
 from .template import Template
+from ..env import is_debug_mode
 
 
 class TemplateLoader:
@@ -52,11 +53,11 @@ class TemplateLoader:
 
       definition = self.template_defintions[name]
 
-      if not definition["prepared"]:
+      if not definition["prepared"] or is_debug_mode():
         self._prepare_definition(definition)
 
-      # if not definition["template"]:
-      self._build_template(definition)
+      if not definition["template"] or is_debug_mode():
+        self._build_template(definition)
 
       return definition["template"]
 
@@ -88,6 +89,9 @@ class TemplateLoader:
     def _read_files(self, base_dir, file_locations):
       files = []
       for file in file_locations:
+        if not os.path.isfile(file):
+          continue
+
         files.append(FileStorage(
           stream=open(file, "rb"),
           filename=os.path.relpath(file, base_dir),

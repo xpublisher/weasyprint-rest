@@ -1,4 +1,4 @@
-
+import logging
 
 from flask import Flask
 from flask_restful import Api
@@ -10,6 +10,7 @@ from .env import (
   get_max_upload_size, get_template_directory, is_debug_mode,
   get_secret_key, is_cors_enabled, get_cors_origins
 )
+
 
 _global = {
   "app": None,
@@ -33,6 +34,10 @@ def create_app():
 
   register_routes(local_api)
   TemplateLoader().load(get_template_directory())
+
+  weasyprint_logger = logging.getLogger("weasyprint")
+  if is_debug_mode():
+    weasyprint_logger.setLevel(logging.DEBUG)
 
   _global["app"] = local_app
   _global["api"] = local_api

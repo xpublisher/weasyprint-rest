@@ -5,10 +5,12 @@ import mimetypes
 from weasyprint import CSS, default_url_fetcher
 from weasyprint.fonts import FontConfiguration
 
+from .non_closable import NonClosable
 from ..web.util import check_url_access
 
 
 UNICODE_SCHEME_RE = re.compile('^([a-zA-Z][a-zA-Z0-9.+-]+):')
+BASE64_DATA_RE = re.compile('^data:[^;]+;base64,')
 
 
 class Template:
@@ -23,7 +25,12 @@ class Template:
 
     if styles is not None:
       self.styles = ([
-        CSS(file_obj=sheet, url_fetcher=self.url_fetcher, font_config=self.font_config) for sheet in styles
+        CSS(
+          file_obj=sheet,
+          url_fetcher=self.url_fetcher,
+          font_config=self.font_config,
+          base_url=os.path.join(os.getcwd(), os.path.basename(sheet.filename))
+        ) for sheet in styles
       ])
     else:
       self.styles = []
@@ -45,17 +52,20 @@ class Template:
     return self.font_config
 
   def url_fetcher(self, url):
-
     if not UNICODE_SCHEME_RE.match(url):  # pragma: no cover
       raise ValueError('Not an absolute URI: %r' % url)
 
     if url.startswith('file://'):
       return self._resolve_file(url.split('?')[0])
 
-    if not check_url_access(url):
+    if not check_url_access(url) and not BASE64_DATA_RE.match(url):
       raise PermissionError('Requested URL %r was blocked because of restircion definitions.' % url)
 
-    return default_url_fetcher(url)
+    fetch_result = default_url_fetcher(url)
+    if fetch_result["mime_type"] == "text/plain":
+      fetch_result["mime_type"] = mimetypes.guess_type(url)[0]
+
+    return fetch_result
 
   def _resolve_file(self, url):
     abs_file_path = re.sub("^file://", "", url)
@@ -69,12 +79,12 @@ class Template:
       raise FileNotFoundError('File %r was not found.' % file_path)
 
     mimetype = file.mimetype
-    if mimetype == "application/octet-stream":
+    if mimetype in ["application/octet-stream", "text/plain"]:
       mimetype = mimetypes.guess_type(file_path)[0]
 
     return {
       'mime_type': mimetype,
-      'file_obj': file,
+      'file_obj': NonClosable(file),
       'filename': file_path
     }
 

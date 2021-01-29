@@ -144,7 +144,7 @@ def test_post_print_html_missing_params(client):
 
 
 def test_post_print_html_without_css_assets(client):
-  data = get_print_input()
+  data = get_print_input(False)
   del data["style"]
   data["asset[]"] = []
   res = client.post(
@@ -158,30 +158,31 @@ def test_post_print_html_without_css_assets(client):
 
 def get_print_input(use_template=True):
   input_dir = get_path("./resources/report")
+  template_dir = get_path("./resources/templates/report")
 
   data = {
     "mode": "png",
     "html": read_file(input_dir, "report.html"),
-    "style": read_file(input_dir, "report.css"),
   }
 
   if use_template:
     data["template"] = "report"
   else:
-    asset_dir = get_path("./resources/templates/report")
     data.update({
+      "style": read_file(template_dir, "report.css"),
       "asset[]": [
-        read_file(asset_dir, "FiraSans-Bold.otf"),
-        read_file(asset_dir, "FiraSans-Italic.otf"),
-        read_file(asset_dir, "FiraSans-LightItalic.otf"),
-        read_file(asset_dir, "FiraSans-Light.otf"),
-        read_file(asset_dir, "FiraSans-Regular.otf"),
-        read_file(asset_dir, "heading.svg"),
-        read_file(asset_dir, "internal-links.svg"),
-        read_file(asset_dir, "multi-columns.svg"),
-        read_file(asset_dir, "report-cover.jpg"),
-        read_file(asset_dir, "style.svg"),
-        read_file(asset_dir, "table-content.svg")
+        # TODO: Fonts does currently not work
+        read_file(template_dir, "FiraSans-Bold.otf"),
+        read_file(template_dir, "FiraSans-Italic.otf"),
+        read_file(template_dir, "FiraSans-LightItalic.otf"),
+        read_file(template_dir, "FiraSans-Light.otf"),
+        read_file(template_dir, "FiraSans-Regular.otf"),
+        read_file(template_dir, "heading.svg"),
+        read_file(template_dir, "internal-links.svg"),
+        read_file(template_dir, "multi-columns.svg"),
+        read_file(template_dir, "report-cover.jpg"),
+        read_file(template_dir, "style.svg"),
+        read_file(template_dir, "table-content.svg")
       ]
     })
 
