@@ -31,6 +31,7 @@ def test_post_print_png(client):
   assert res.status_code == 200
 
   data = res.get_data()
+  write_file(get_path('./resources/'), "1.png", data)
   assert verify_output(data)
 
 
@@ -188,7 +189,6 @@ def get_print_input(use_template=True):
 
   return data
 
-
 def read_file(path, filename):
   abs_path = os.path.join(path, filename)
   return FileStorage(
@@ -196,6 +196,11 @@ def read_file(path, filename):
     filename=filename,
     content_type=mimetypes.guess_type(filename)[0],
   )
+
+def write_file(path, filename, data):
+  abs_path = os.path.join(path, filename)
+  with open(abs_path, "wb") as file:
+  	file.write(data)
 
 
 def verify_output(data):

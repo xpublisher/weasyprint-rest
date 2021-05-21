@@ -1,5 +1,6 @@
-FROM python:3.8.1-buster AS builder
-RUN apt-get update && apt-get install -y --no-install-recommends --yes python3-venv gcc libpython3-dev && \
+FROM python:3-buster AS builder
+RUN apt-get update && apt-get upgrade -y &&  apt-get dist-upgrade -y
+RUN apt-get install -y --no-install-recommends --yes python3-venv gcc libpython3-dev && \
     python3 -m venv /venv && \
     /venv/bin/pip install --upgrade pip
 
@@ -22,7 +23,8 @@ ARG ENABLE_BUILD_LINT
 RUN if [ "${ENABLE_BUILD_TEST}" != "false" ]; then make test; else echo "Skip test"; fi
 RUN if [ "${ENABLE_BUILD_LINT}" != "false" ]; then make lint; else echo "Skip lint"; fi
 
-FROM martinheinz/python-3.8.1-buster-tools:latest AS runner
+# FROM martinheinz/python-3.8.1-buster-tools:latest AS runner
+FROM python:3-buster AS runner
 COPY --from=builder-venv /venv /venv
 COPY --from=tester /app /app
 
