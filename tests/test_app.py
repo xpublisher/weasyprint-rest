@@ -9,6 +9,24 @@ def test_app():
   pass
 
 
+def test_may_update_result(client):
+  print("OPEN")
+  if os.environ['ENABLE_BUILD_TEST_IMAGE_UPDATE'] == "true":
+    print("REQUEST")
+    res = client.post(
+      "/api/v1.0/print",
+      content_type='multipart/form-data',
+      data=get_print_input(),
+      headers=auth_header()
+    )
+    data = res.get_data()
+    print("HERE")
+    write_file(get_path("./resources/report"), "result_new.png", data)
+    write_file(get_path("./resources/report"), "result.png", data)
+    print("DONE")
+  assert True
+
+
 def test_get_health_status(client):
   res = client.get("/api/v1.0/health")
   assert "status" in res.json and res.json["status"] == "OK"
@@ -31,7 +49,6 @@ def test_post_print_png(client):
   assert res.status_code == 200
 
   data = res.get_data()
-  write_file(get_path('./resources/'), "1.png", data)
   assert verify_output(data)
 
 
@@ -189,6 +206,7 @@ def get_print_input(use_template=True):
 
   return data
 
+
 def read_file(path, filename):
   abs_path = os.path.join(path, filename)
   return FileStorage(
@@ -197,10 +215,11 @@ def read_file(path, filename):
     content_type=mimetypes.guess_type(filename)[0],
   )
 
+
 def write_file(path, filename, data):
   abs_path = os.path.join(path, filename)
   with open(abs_path, "wb") as file:
-  	file.write(data)
+    file.write(data)
 
 
 def verify_output(data):

@@ -6,6 +6,7 @@ services:
       dockerfile: dev.Dockerfile
       args:
         - ENABLE_BUILD_TEST=true
+        - ENABLE_BUILD_TEST_IMAGE_UPDATE=true
         - ENABLE_BUILD_LINT=true
     ports:
       - 5000:5000
@@ -14,3 +15,4 @@ services:
       ALLOWED_URL_PATTERN: ^https?://(.*\.)google.com/.*$$
     volumes:
       - ./tests/resources/templates:/data/templates
+      - ./tests/resources/report:/app/tests/resources/report
