@@ -1,16 +1,19 @@
 version: "3"
 services:
   weasyprint-rest:
-    build: 
+    build:
       context: .
       dockerfile: dev.Dockerfile
-      args: 
-        - ENABLE_BUILD_TEST=true
-        - ENABLE_BUILD_LINT=true
-    ports: 
+      args:
+        - ENABLE_BUILD_TEST=false
+        - ENABLE_BUILD_RUNTIME_TEST=false
+        - ENABLE_BUILD_IMAGE_UPDATE=false
+        - ENABLE_BUILD_LINT=false
+    ports:
       - 5000:5000
-    environment: 
+    environment:
       API_KEY:
       ALLOWED_URL_PATTERN: ^https?://(.*\.)google.com/.*$$
     volumes:
       - ./tests/resources/templates:/data/templates
+      - ./tests/resources/report:/app/tests/resources/report

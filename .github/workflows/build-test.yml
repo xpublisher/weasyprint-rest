@@ -22,7 +22,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Makefile test
-      run: make test
+      run: make docker-test
     - name: Install Linters
       run: |
         pip install pylint
@@ -36,6 +36,8 @@ jobs:
         export GIT_BRANCH="${GITHUB_REF/refs\/heads\//}"
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         chmod +x ./cc-test-reporter
+        sed -ie "s|<source>/app/weasyprint_rest</source>|<source>$(pwd)/weasyprint_rest</source>|g" coverage.xml
+        head coverage.xml
         ./cc-test-reporter format-coverage -t coverage.py coverage.xml
         ./cc-test-reporter upload-coverage -r "${{ secrets.CC_TEST_REPORTER_ID }}"
 

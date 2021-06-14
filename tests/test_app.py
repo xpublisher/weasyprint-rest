@@ -9,6 +9,19 @@ def test_app():
   pass
 
 
+def test_may_update_result(client):
+  if os.getenv('ENABLE_BUILD_IMAGE_UPDATE') == "true":
+    res = client.post(
+      "/api/v1.0/print",
+      content_type='multipart/form-data',
+      data=get_print_input(),
+      headers=auth_header()
+    )
+    data = res.get_data()
+    write_file(get_path("./resources/report"), "result.png", data)
+  assert True
+
+
 def test_get_health_status(client):
   res = client.get("/api/v1.0/health")
   assert "status" in res.json and res.json["status"] == "OK"
@@ -196,6 +209,12 @@ def read_file(path, filename):
     filename=filename,
     content_type=mimetypes.guess_type(filename)[0],
   )
+
+
+def write_file(path, filename, data):
+  abs_path = os.path.join(path, filename)
+  with open(abs_path, "wb") as file:
+    file.write(data)
 
 
 def verify_output(data):
