@@ -38,7 +38,7 @@ jobs:
         chmod +x ./cc-test-reporter
         sed -ie "s|<source>/app/weasyprint_rest</source>|<source>$(pwd)/weasyprint_rest</source>|g" coverage.xml
         head coverage.xml
-        ./cc-test-reporter format-coverage -t coverage.xml
+        ./cc-test-reporter format-coverage -t coverage.py coverage.xml
         ./cc-test-reporter upload-coverage -r "${{ secrets.CC_TEST_REPORTER_ID }}"
 
     - name: SonarCloud scanner
