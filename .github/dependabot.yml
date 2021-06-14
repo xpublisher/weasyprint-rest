@@ -6,8 +6,4 @@ updates:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: weasyprint
-    versions:
-    - "52.3"
-    - "52.4"
+
