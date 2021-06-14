@@ -1,0 +1,166 @@
+{
+  "ci_service": {
+    "branch": "master",
+    "build_identifier": "",
+    "build_url": "",
+    "commit_sha": "edd680604ea63cd2711337d9ade70da78ea65f72",
+    "committed_at": 1623666625,
+    "name": ""
+  },
+  "environment": {
+    "gem_version": "3.1.2",
+    "package_version": "",
+    "pwd": "/home/kpalatzky/workspace/side-projects/weasyprint-rest",
+    "prefix": "/home/kpalatzky/workspace/side-projects/weasyprint-rest",
+    "rails_root": "",
+    "reporter_version": "latest",
+    "simplecov_root": ""
+  },
+  "git": {
+    "branch": "master",
+    "head": "edd680604ea63cd2711337d9ade70da78ea65f72",
+    "committed_at": 1623666625
+  },
+  "covered_percent": 92.83387622149837,
+  "covered_strength": 0,
+  "line_counts": {
+    "missed": 22,
+    "covered": 285,
+    "total": 307
+  },
+  "source_files": [
+    {
+      "blob_id": "e0f043aa8e21b486e3b9b7b51474401a23af6081",
+      "coverage": "[1,null,null,1,1,null,null,1,1,null,null,1,1,null,null,1,1,null,null,1,1,null,null,1,1,null,null,1,1,null,null,1,1,null,null,1,1,null,null,1,1,null,null,1,1]",
+      "covered_percent": 100,
+      "covered_strength": 1,
+      "line_counts": {
+        "missed": 0,
+        "covered": 23,
+        "total": 23
+      },
+      "name": "weasyprint_rest/env.py"
+    },
+    {
+      "blob_id": "c5245b35c076c43d01550fd4bde8d7ce9aa7cf0b",
+      "coverage": "[1,1,1,null,1,null,1,1,null,1,0,null,1,1,null,1,0,null,1,0]",
+      "covered_percent": 78.57142857142857,
+      "covered_strength": 0.7857142857142857,
+      "line_counts": {
+        "missed": 3,
+        "covered": 11,
+        "total": 14
+      },
+      "name": "weasyprint_rest/print/non_closable.py"
+    },
+    {
+      "blob_id": "7e1d3fb86055292095c0ccf1e2015eff583e9dbd",
+      "coverage": "[null,null,null,1,1,1,null,null,1,null,1,1,null,1,1,null,1]",
+      "covered_percent": 100,
+      "covered_strength": 1,
+      "line_counts": {
+        "missed": 0,
+        "covered": 9,
+        "total": 9
+      },
+      "name": "weasyprint_rest/web/rest/health.py"
+    },
+    {
+      "blob_id": "c1d9fa9cb196a4457c90359468382e02ca8d075e",
+      "coverage": "[null,null,null,1,1,null,1,1,1,null,1,1,1,1,null,null,1,1,null,null,1,1,1,1,null,1,1,1,1,1,1,1,null,null,1,1,null,1,0,0,0,null,null,null,null,null,1,1,1,0,null,1,null,null,1,0,0,0,0,0,null,null,1,1,null,null,null,1,1,1,null,1,null,null,1,1,null,1,1,null,1,1,1,1,null,null,null,null,1,1,null,1,null,1,1,null,null,1,1,1,1,1,1,null,1,1,null,1,null,null,null,null,null,null,1]",
+      "covered_percent": 86.76470588235294,
+      "covered_strength": 0.8676470588235294,
+      "line_counts": {
+        "missed": 9,
+        "covered": 59,
+        "total": 68
+      },
+      "name": "weasyprint_rest/web/rest/print.py"
+    },
+    {
+      "blob_id": "dfeba70e8343a87c3b45d8e9700aad84ab9da8e3",
+      "coverage": "[null,null,null,1,1,null,null,1,1,1]",
+      "covered_percent": 100,
+      "covered_strength": 1,
+      "line_counts": {
+        "missed": 0,
+        "covered": 5,
+        "total": 5
+      },
+      "name": "weasyprint_rest/web/routes.py"
+    },
+    {
+      "blob_id": "37b3c680a6c7d4b97b93f5875d60cefa253e7d97",
+      "coverage": "[null,null,null,1,null,null,1,1,null,1,1,null,1,null,null,null,null,1,1,1,1,1,null,null,null,null,null,null,1,1,null,1,null,1,null,null,1,1,1,null,1,1,1,1,1]",
+      "covered_percent": 100,
+      "covered_strength": 1,
+      "line_counts": {
+        "missed": 0,
+        "covered": 23,
+        "total": 23
+      },
+      "name": "weasyprint_rest/web/util.py"
+    },
+    {
+      "blob_id": "06dc2e3648590ed76d4d4cf2d44f3939e5456916",
+      "coverage": "[1,null,1]",
+      "covered_percent": 100,
+      "covered_strength": 1,
+      "line_counts": {
+        "missed": 0,
+        "covered": 2,
+        "total": 2
+      },
+      "name": "weasyprint_rest/__init__.py"
+    },
+    {
+      "blob_id": "bceab66d4b9779bb9a993cb9441abdcb3265253c",
+      "coverage": "[1,null,1,1,1,null,1,1,1,null,null,null,null,null,1,null,null,null,null,null,1,1,null,1,1,null,null,1,1,1,1,null,1,null,1,1,null,1,1,1,null,1,1,null,null,1,null,null,1,null,null,1,null,null,0]",
+      "covered_percent": 96.42857142857143,
+      "covered_strength": 0.9642857142857143,
+      "line_counts": {
+        "missed": 1,
+        "covered": 27,
+        "total": 28
+      },
+      "name": "weasyprint_rest/app.py"
+    },
+    {
+      "blob_id": "c7ce533247142af9443441e5889515ee95333cbe",
+      "coverage": "[1,1,1,null,1,1,null,1,1,null,null,1,1,null,null,1,1,1,1,null,1,1,null,0,null,1,1,null,null,null,null,null,null,null,null,0,null,1,1,1,1,null,1,1,1,1,null,1,1,null,1,1,null,1,null,null,null,1,1,null,1,1,null,1,1,1,null,1,null,1,1,1,null,1,1,1,null,null,null,null,1,1,0,null,1,null,null,null,null,null,1,0]",
+      "covered_percent": 92.3076923076923,
+      "covered_strength": 0.9230769230769231,
+      "line_counts": {
+        "missed": 4,
+        "covered": 48,
+        "total": 52
+      },
+      "name": "weasyprint_rest/print/template.py"
+    },
+    {
+      "blob_id": "4251b20391079aa6d8f9eb3a52bf457d47621b1e",
+      "coverage": "[1,1,1,1,1,null,1,null,1,1,null,null,1,null,1,null,1,1,1,null,1,1,null,1,1,1,null,1,1,1,1,1,1,1,0,0,null,1,1,1,0,0,null,1,1,1,1,1,null,1,1,1,null,1,null,1,1,null,1,1,null,1,null,1,1,null,1,1,null,1,1,null,1,null,1,1,null,null,null,1,1,null,1,1,null,1,1,null,1,1,1,1,0,null,1,null,null,null,null,1]",
+      "covered_percent": 92.64705882352942,
+      "covered_strength": 0.9264705882352942,
+      "line_counts": {
+        "missed": 5,
+        "covered": 63,
+        "total": 68
+      },
+      "name": "weasyprint_rest/print/template_loader.py"
+    },
+    {
+      "blob_id": "f532ff13283a83a6a00a576be1273e088acad438",
+      "coverage": "[1,null,1,null,1,null,null,1,null,1,1,1,null,1,1,1,1,null,1,1,null,1,1]",
+      "covered_percent": 100,
+      "covered_strength": 1,
+      "line_counts": {
+        "missed": 0,
+        "covered": 15,
+        "total": 15
+      },
+      "name": "weasyprint_rest/print/weasyprinter.py"
+    }
+  ],
+  "repo_token": ""
+}

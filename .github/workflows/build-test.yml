@@ -36,7 +36,8 @@ jobs:
         export GIT_BRANCH="${GITHUB_REF/refs\/heads\//}"
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         chmod +x ./cc-test-reporter
-        ./cc-test-reporter format-coverage -t coverage.py coverage.xml
+        sed -ie "s|<source>/app/weasyprint-rest</source>|<source>$(pwd)/weasyprint_rest</source>|g" coverage.xml
+        ./cc-test-reporter format-coverage -t coverage.xml
         ./cc-test-reporter upload-coverage -r "${{ secrets.CC_TEST_REPORTER_ID }}"
 
     - name: SonarCloud scanner
