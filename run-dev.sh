@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-
-echo "ENV: ${ENABLE_BUILD_TEST_IMAGE_UPDATE}"
-if [ "${ENABLE_BUILD_TEST_IMAGE_UPDATE}" == "true" ]
+echo "GOT $ENABLE_RUNTIME_TEST_ONLY"
+if [ "${ENABLE_BUILD_TEST_IMAGE_UPDATE}" == "true" ] || [ "${ENABLE_RUNTIME_TEST_ONLY}" == "true" ]
 then
   make test;
 fi
 
-/venv/bin/python3 -m weasyprint_rest
+if [ "${ENABLE_RUNTIME_TEST_ONLY}" != "true" ]
+then
+
+  /venv/bin/python3 -m weasyprint_rest
+fi

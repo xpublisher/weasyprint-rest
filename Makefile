@@ -32,6 +32,9 @@ run:
 test:
 	@pytest
 
+docker-test: build-dev
+	@docker run --env ENABLE_RUNTIME_TEST_ONLY=true -w `pwd` weasyprint-rest:latest
+
 lint:
 	@echo "\n${BLUE}Running Pylint against source and test files...${NC}\n"
 	@pylint --rcfile=setup.cfg **/*.py

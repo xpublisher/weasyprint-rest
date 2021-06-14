@@ -10,9 +10,7 @@ def test_app():
 
 
 def test_may_update_result(client):
-  print("OPEN")
-  if os.environ['ENABLE_BUILD_TEST_IMAGE_UPDATE'] == "true":
-    print("REQUEST")
+  if os.getenv('ENABLE_BUILD_IMAGE_UPDATE') == "true":
     res = client.post(
       "/api/v1.0/print",
       content_type='multipart/form-data',
@@ -20,10 +18,7 @@ def test_may_update_result(client):
       headers=auth_header()
     )
     data = res.get_data()
-    print("HERE")
-    write_file(get_path("./resources/report"), "result_new.png", data)
     write_file(get_path("./resources/report"), "result.png", data)
-    print("DONE")
   assert True
 
 

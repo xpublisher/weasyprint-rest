@@ -13,23 +13,23 @@ ENV PATH="/venv/bin:${PATH}"
 COPY . /app
 WORKDIR /app
 
-ARG ENABLE_BUILD_TEST_IMAGE_UPDATE
-ENV ENABLE_BUILD_TEST_IMAGE_UPDATE=${ENABLE_BUILD_TEST_IMAGE_UPDATE}
-ARG ENABLE_BUILD_TEST
-ARG ENABLE_BUILD_LINT
+ARG ENABLE_BUILD_IMAGE_UPDATE=false
+ARG ENABLE_BUILD_TEST=false
+ARG ENABLE_BUILD_LINT=false
 
-RUN if [ "${ENABLE_BUILD_TEST}" != "false" ] && [ "${ENABLE_BUILD_TEST_IMAGE_UPDATE}" != "true" ]; then make test; else echo "Skip test"; fi
+RUN if [ "${ENABLE_BUILD_TEST}" != "false" ] && [ "${ENABLE_BUILD_IMAGE_UPDATE}" != "true" ]; then make test; else echo "Skip test"; fi
 RUN if [ "${ENABLE_BUILD_LINT}" != "false" ]; then make lint; else echo "Skip lint"; fi
 
-RUN mkdir /data
+RUN mkdir -p /data/templates
 
+ENV ENABLE_BUILD_IMAGE_UPDATE=${ENABLE_BUILD_IMAGE_UPDATE}
 ENV ENABLE_DEBUG_MODE=true
 ENV FLASK_ENV=development
+ENV ENABLE_RUNTIME_TEST_ONLY=false
 ENV PATH="/venv/bin:${PATH}"
 
 WORKDIR /app
 ENTRYPOINT ["/app/run-dev.sh"]
-#USER 1001
 
 LABEL name={NAME}
 LABEL version={VERSION}
