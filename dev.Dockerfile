@@ -2,7 +2,7 @@ FROM python:3-buster AS builder
 RUN apt-get update && apt-get upgrade -y &&  apt-get dist-upgrade -y
 RUN apt-get install -y --no-install-recommends --yes python3-venv gcc libpython3-dev && \
     python3 -m venv /venv && \
-    /venv/bin/pip install --upgrade pip
+    /venv/bin/pip install --upgrade pip psutil
 
 COPY requirements.txt /requirements.txt
 RUN /venv/bin/pip install -r /requirements.txt
