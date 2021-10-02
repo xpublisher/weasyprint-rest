@@ -23,7 +23,7 @@ def run_before_and_after_tests(request):
   used_after = int(calc_mbytes(psutil.virtual_memory().used))
   used_difference = used_after - used_before
   testname = request.node.name
-  write_log(testname + ": " + str(used_difference) + " <= 0 " + str(used_difference <= 0))
+  write_log(testname + ": " + str(used_difference <= 0) + " " + str(used_difference) + " <= 0 ")
   # tolerance?
   assert used_difference <= 0
 
