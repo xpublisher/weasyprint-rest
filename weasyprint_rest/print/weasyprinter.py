@@ -1,4 +1,5 @@
 import os
+import gc
 
 from weasyprint import HTML
 
@@ -17,7 +18,18 @@ class WeasyPrinter():
     styles = self.template.get_styles() if self.template is not None else []
 
     if mode == "pdf":
-      return html.write_pdf(stylesheets=styles, image_cache=None, font_config=font_config)
+      result = html.write_pdf(stylesheets=styles, image_cache=None, font_config=font_config)
+      # Sorry for the duplicate but im not sure this can be done in an extra method :/
+      del html
+      del font_config
+      del styles
+      gc.collect()
+      return result
 
     if mode == "png":
-      return html.write_png(stylesheets=styles, image_cache=None, font_config=font_config)
+      result = html.write_png(stylesheets=styles, image_cache=None, font_config=font_config)
+      del html
+      del font_config
+      del styles
+      gc.collect()
+      return result
