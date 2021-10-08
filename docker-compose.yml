@@ -18,7 +18,3 @@ services:
       - ./tests/resources/templates:/data/templates
       - ./tests/resources/report:/app/tests/resources/report
       - ./logs:/app/tests/logs
-    deploy:
-      resources:
-        limits:
-          memory: 300M
