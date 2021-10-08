@@ -10,8 +10,10 @@ from werkzeug.datastructures import FileStorage
 @pytest.fixture(autouse=True)
 def run_before_and_after_tests(request):
   """Fixture to execute asserts before and after a test is run"""
+  # Setup: fill with any logic you want
   used_before = int(calc_mbytes(psutil.virtual_memory().used))
   yield # this is where the testing happens
+  # Teardown : fill with any logic you want
   used_after = int(calc_mbytes(psutil.virtual_memory().used))
   used_difference = used_after - used_before
   # tolerance?
