@@ -3,7 +3,6 @@
 
 import os
 import io
-import gc
 
 from werkzeug.datastructures import FileStorage
 from flask import request, abort, make_response
@@ -112,15 +111,5 @@ class PrintAPI(Resource):
       basename,
       extension
     )
-
-    del disposition
-    del basename
-    del extension
-    del content
-    del printer
-    del template
-    del mode
-    del html
-    gc.collect()
 
     return response
