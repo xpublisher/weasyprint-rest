@@ -7,6 +7,12 @@ import pytest
 from werkzeug.datastructures import FileStorage
 
 
+@pytest.fixture(scope="session", autouse=True)
+def do_something(request):
+  # prepare something ahead of all tests
+  write_log("\n")
+
+
 @pytest.fixture(autouse=True)
 def run_before_and_after_tests(request):
   """Fixture to execute asserts before and after a test is run"""
@@ -16,8 +22,10 @@ def run_before_and_after_tests(request):
   # Teardown : fill with any logic you want
   used_after = int(calc_mbytes(psutil.virtual_memory().used))
   used_difference = used_after - used_before
+  testname = request.node.name
+  write_log(testname + ": " + str(used_difference <= 0) + " " + str(used_difference) + " <= 0 ")
   # tolerance?
-  assert used_difference <= 3
+  assert used_difference <= 0
 
 
 def app():
@@ -244,6 +252,14 @@ def verify_output(data):
 
 def calc_mbytes(bytes):
   return bytes / 1024 / 1024
+
+
+# If you want to use this more dynamically, change it yourself ;-P
+def write_log(data):
+  abs_path = os.path.join("/app/tests/logs", "ram.log")
+  with open(abs_path, "a") as file:
+    file.write(str(data))
+    file.write("\n")
 
 
 def get_path(relative_path):
