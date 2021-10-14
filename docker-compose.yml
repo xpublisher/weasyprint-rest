@@ -17,3 +17,7 @@ services:
     volumes:
       - ./tests/resources/templates:/data/templates
       - ./tests/resources/report:/app/tests/resources/report
+    deploy:
+      resources:
+        limits:
+          memory: 1G
