@@ -15,7 +15,7 @@ class HealthAPI(Resource):
         pong = request.args.get('ping', '')
 
         return {
-                "status": "OK",
-                "timestamp": round(time.time() * 1000),
-                **({"pong": pong} if pong else {})
-            }, 200
+            "status": "OK",
+            "timestamp": round(time.time() * 1000),
+            **({"pong": pong} if pong else {})
+        }, 200
