@@ -6,5 +6,5 @@ from .rest.print import PrintAPI
 
 
 def register_routes(api):
-  api.add_resource(HealthAPI, '/api/v1.0/health')
-  api.add_resource(PrintAPI, '/api/v1.0/print')
+    api.add_resource(HealthAPI, '/api/v1.0/health')
+    api.add_resource(PrintAPI, '/api/v1.0/print')

@@ -11,90 +11,90 @@ from ..env import is_debug_mode
 
 
 class TemplateLoader:
+    instance = None
 
-  instance = None
-
-  def __init__(self):
-    if not TemplateLoader.instance:
-      TemplateLoader.instance = TemplateLoader.__TemplateLoader()
-
-  def __getattr__(self, name):
-    return getattr(self.instance, name)
-
-  class __TemplateLoader:
     def __init__(self):
-      self.template_defintions = {}
+        if not TemplateLoader.instance:
+            TemplateLoader.instance = TemplateLoader.__TemplateLoader()
 
-    def load(self, base_dir):
-      for template_dir in os.listdir(base_dir):
-        abs_template_dir = os.path.join(base_dir, template_dir)
-        template_file = os.path.join(abs_template_dir, "template.json")
-        if not os.path.isfile(template_file):
-          self.add_definition(abs_template_dir, {})
-          continue
-        with open(template_file) as json_file:
-          self.add_definition(abs_template_dir, json.load(json_file))
+    def __getattr__(self, name):
+        return getattr(self.instance, name)
 
-    def add_definition(self, base_dir, definition):
-      name = definition["name"] if "name" in definition else os.path.basename(base_dir)
-      if name in self.template_defintions:
-        logging.warn("Template %r found in %r was already defined. This template will be ignored" % (name, base_dir))
-        return
+    class __TemplateLoader:
+        def __init__(self):
+            self.template_definitions = {}
 
-      definition["name"] = name
-      definition["base_dir"] = base_dir
-      definition["prepared"] = False
-      definition["template"] = None
-      self.template_defintions[name] = definition
+        def load(self, base_dir):
+            for template_dir in os.listdir(base_dir):
+                abs_template_dir = os.path.join(base_dir, template_dir)
+                template_file = os.path.join(abs_template_dir, "template.json")
+                if not os.path.isfile(template_file):
+                    self.add_definition(abs_template_dir, {})
+                    continue
+                with open(template_file) as json_file:
+                    self.add_definition(abs_template_dir, json.load(json_file))
 
-    def get(self, name):
-      if name not in self.template_defintions:
-        return None
+        def add_definition(self, base_dir, definition):
+            name = definition["name"] if "name" in definition else os.path.basename(base_dir)
+            if name in self.template_definitions:
+                logging.warn(
+                    "Template %r found in %r was already defined. This template will be ignored" % (name, base_dir))
+                return
 
-      definition = self.template_defintions[name]
+            definition["name"] = name
+            definition["base_dir"] = base_dir
+            definition["prepared"] = False
+            definition["template"] = None
+            self.template_definitions[name] = definition
 
-      if not definition["prepared"] or is_debug_mode():
-        self._prepare_definition(definition)
+        def get(self, name):
+            if name not in self.template_definitions:
+                return None
 
-      if not definition["template"] or is_debug_mode():
-        self._build_template(definition)
+            definition = self.template_definitions[name]
 
-      return definition["template"]
+            if not definition["prepared"] or is_debug_mode():
+                self._prepare_definition(definition)
 
-    def _prepare_definition(self, definition):
-      base_dir = definition["base_dir"]
+            if not definition["template"] or is_debug_mode():
+                self._build_template(definition)
 
-      if "styles" not in definition:
-        definition["styles"] = self._detect_file_locations(base_dir, "**/*.css")
+            return definition["template"]
 
-      if "assets" not in definition:
-        definition["assets"] = self._detect_file_locations(base_dir, "**/*")
+        def _prepare_definition(self, definition):
+            base_dir = definition["base_dir"]
 
-      definition["prepared"] = True
+            if "styles" not in definition:
+                definition["styles"] = self._detect_file_locations(base_dir, "**/*.css")
 
-    def _detect_file_locations(self, base_dir, search_pattern):
-      return [
-        name for name in glob.glob(os.path.join(base_dir, search_pattern), recursive=True)
-      ]
+            if "assets" not in definition:
+                definition["assets"] = self._detect_file_locations(base_dir, "**/*")
 
-    def _build_template(self, definition):
-      base_dir = definition["base_dir"]
+            definition["prepared"] = True
 
-      styles = self._read_files(base_dir, definition["styles"])
-      assets = self._read_files(base_dir, definition["assets"])
+        def _detect_file_locations(self, base_dir, search_pattern):
+            return [
+                name for name in glob.glob(os.path.join(base_dir, search_pattern), recursive=True)
+            ]
 
-      template = Template(styles=styles, assets=assets)
-      definition["template"] = template
+        def _build_template(self, definition):
+            base_dir = definition["base_dir"]
 
-    def _read_files(self, base_dir, file_locations):
-      files = []
-      for file in file_locations:
-        if not os.path.isfile(file):
-          continue
+            styles = self._read_files(base_dir, definition["styles"])
+            assets = self._read_files(base_dir, definition["assets"])
 
-        files.append(FileStorage(
-          stream=open(file, "rb"),
-          filename=os.path.relpath(file, base_dir),
-          content_type=mimetypes.guess_type(file)[0]
-        ))
-      return files
+            template = Template(styles=styles, assets=assets)
+            definition["template"] = template
+
+        def _read_files(self, base_dir, file_locations):
+            files = []
+            for file in file_locations:
+                if not os.path.isfile(file):
+                    continue
+
+                files.append(FileStorage(
+                    stream=open(file, "rb"),
+                    filename=os.path.relpath(file, base_dir),
+                    content_type=mimetypes.guess_type(file)[0]
+                ))
+            return files
