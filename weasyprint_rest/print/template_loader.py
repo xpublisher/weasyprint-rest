@@ -23,6 +23,7 @@ class TemplateLoader:
     class __TemplateLoader:
         def __init__(self):
             self.template_definitions = {}
+            self.files = []
 
         def load(self, base_dir):
             for template_dir in os.listdir(base_dir):
@@ -87,14 +88,18 @@ class TemplateLoader:
             definition["template"] = template
 
         def _read_files(self, base_dir, file_locations):
-            files = []
+            self.files = []
             for file in file_locations:
                 if not os.path.isfile(file):
                     continue
 
-                files.append(FileStorage(
+                self.files.append(FileStorage(
                     stream=open(file, "rb"),
                     filename=os.path.relpath(file, base_dir),
                     content_type=mimetypes.guess_type(file)[0]
                 ))
-            return files
+            return self.files
+        
+        def close(self):
+            for file in self.files:
+                file.close()

@@ -7,5 +7,5 @@ fi
 if [ "${ENABLE_RUNTIME_TEST_ONLY}" != "true" ]
 then
 
-  /venv/bin/python3 -m weasyprint_rest
+  /venv/bin/python3 -m weasyprint_rest -e PYTHONUNBUFFERED=1
 fi

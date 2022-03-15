@@ -11,11 +11,12 @@ services:
         - ENABLE_BUILD_LINT=false
     ports:
       - 5000:5000
+      - 5678:5678
     environment:
       API_KEY:
       ALLOWED_URL_PATTERN: ^https?://(.*\.)google.com/.*$$
     volumes:
-      - ./tests/resources/templates:/data/templates
+      - ./.templates:/data/templates
       - ./tests/resources/report:/app/tests/resources/report
     deploy:
       resources:

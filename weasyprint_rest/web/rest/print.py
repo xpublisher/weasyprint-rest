@@ -67,8 +67,8 @@ def _build_template():
     })
     assets = _parse_request_argument("asset[]", [])
     template_name = _parse_request_argument("template", None)
-    base_template = TemplateLoader().get(template_name)
-
+    template_loader = TemplateLoader()
+    base_template = template_loader.get(template_name)
     return Template(styles=styles, assets=assets, base_template=base_template)
 
 
@@ -86,13 +86,38 @@ class PrintAPI(Resource):
             "file_name": "document.html"
         })
 
+        if mode != 'pdf' and mode != 'png':
+            return abort(422, description="No valid type")
+
         if html is None:
             return abort(422, description="Required argument 'html' is missing.")
 
-        template = _build_template()
+        # loop to show the memoryleak 
+        for i in range(0, 100):
+            template = _build_template()
+            
+            printer = WeasyPrinter(html, template=template)
+            content = printer.write(mode)
 
-        printer = WeasyPrinter(html, template=template)
-        content = printer.write(mode)
+            # output ram usage
+            mem=str(os.popen('free -t -m').readlines())
+            
+            T_ind=mem.index('T')
+            
+            mem_G=mem[T_ind+14:-4]
+            
+            S1_ind=mem_G.index(' ')
+            mem_T=mem_G[0:S1_ind]
+            
+            mem_G1=mem_G[S1_ind+8:]
+            S2_ind=mem_G1.index(' ')
+            mem_U=mem_G1[0:S2_ind]
+
+            mem_F=mem_G1[S2_ind+8:]
+            print('Summary = ' + mem_G)
+            print('Total Memory = ' + mem_T +' MB')
+            print('Used Memory = ' + mem_U +' MB')
+            print('Free Memory = ' + mem_F +' MB')
 
         # build response
         response = make_response(content)
@@ -112,6 +137,8 @@ class PrintAPI(Resource):
             extension
         )
 
+        printer.close()
         html.close()
+        template.close()
 
         return response
