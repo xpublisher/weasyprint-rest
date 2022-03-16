@@ -3,7 +3,7 @@ import os
 import mimetypes
 
 from weasyprint import CSS, default_url_fetcher
-from weasyprint.fonts import FontConfiguration
+from weasyprint.text.fonts import FontConfiguration
 
 from .non_closable import NonClosable
 from ..web.util import check_url_access

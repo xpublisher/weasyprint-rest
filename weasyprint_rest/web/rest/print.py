@@ -77,7 +77,7 @@ class PrintAPI(Resource):
 
     def __init__(self):
         super(PrintAPI, self).__init__()
-
+        
     def post(self):
         mode = _parse_request_argument("mode", "pdf")
         disposition = _parse_request_argument("disposition", "inline")
@@ -93,31 +93,12 @@ class PrintAPI(Resource):
             return abort(422, description="Required argument 'html' is missing.")
 
         # loop to show the memoryleak 
-        for i in range(0, 100):
+        loops = 100
+        for i in range(0, loops):
             template = _build_template()
             
             printer = WeasyPrinter(html, template=template)
             content = printer.write(mode)
-
-            # output ram usage
-            mem=str(os.popen('free -t -m').readlines())
-            
-            T_ind=mem.index('T')
-            
-            mem_G=mem[T_ind+14:-4]
-            
-            S1_ind=mem_G.index(' ')
-            mem_T=mem_G[0:S1_ind]
-            
-            mem_G1=mem_G[S1_ind+8:]
-            S2_ind=mem_G1.index(' ')
-            mem_U=mem_G1[0:S2_ind]
-
-            mem_F=mem_G1[S2_ind+8:]
-            print('Summary = ' + mem_G)
-            print('Total Memory = ' + mem_T +' MB')
-            print('Used Memory = ' + mem_U +' MB')
-            print('Free Memory = ' + mem_F +' MB')
 
         # build response
         response = make_response(content)
