@@ -43,7 +43,7 @@
 First, you can start the container using the following command:
 
 ```bash
-docker run -p 5000:5000 -d xpublisher/weasyprint-rest:latest
+docker run -p 5000:5000 -v /path/to/local/templates:/data/templates -d xpublisher/weasyprint-rest:latest
 ```
 
 Then you can use the following command to generate the report.pdf from the official WeasyPrint sample. You can find the files in `tests/resources/report`.
