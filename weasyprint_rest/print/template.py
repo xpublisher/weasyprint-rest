@@ -3,7 +3,7 @@ import os
 import mimetypes
 
 from weasyprint import CSS, default_url_fetcher
-from weasyprint.fonts import FontConfiguration
+from weasyprint.text.fonts import FontConfiguration
 
 from .non_closable import NonClosable
 from ..web.util import check_url_access
@@ -16,6 +16,8 @@ class Template:
     def __init__(self, styles=None, assets=None, base_template=None):
         self.base_template = base_template
         self.font_config = FontConfiguration()
+        self.file_obj = None
+        self.file = None
 
         if assets is not None:
             self.assets = {item.filename: item for item in assets}
@@ -70,22 +72,37 @@ class Template:
         abs_file_path = re.sub("^file://", "", url)
         file_path = os.path.relpath(abs_file_path, os.getcwd())
 
-        file = None
+        self.file = None
         if self.has_asset(file_path):
-            file = self.get_asset(file_path)
+            self.file = self.get_asset(file_path)
 
-        if file is None:  # pragma: no cover
+        if self.file is None:  # pragma: no cover
             raise FileNotFoundError('File %r was not found.' % file_path)
 
-        mimetype = file.mimetype
+        mimetype = self.file.mimetype
         if mimetype in ["application/octet-stream", "text/plain"]:
             mimetype = mimetypes.guess_type(file_path)[0]
 
+        self.file_obj = NonClosable(self.file)
+        
         return {
             'mime_type': mimetype,
-            'file_obj': NonClosable(file),
+            'file_obj': self.file_obj,
             'filename': file_path
         }
+
+    def close(self):
+        if self.base_template is not None:
+            self.base_template.assets['cover_raw.svg'].close()
+            self.base_template.assets['style.css'].close()
+            self.base_template.assets['cover.svg'].close()
+
+        if self.file_obj is not None:
+            self.file_obj.forceClose()
+        for asset in self.assets:
+            asset.close()
+        if self.file is not None:
+            self.file.close()
 
     def __str__(self):
         return "Template {styles=" + str(self.styles) + ", assets=" + str(self.assets) + "}"

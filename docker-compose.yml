@@ -15,7 +15,7 @@ services:
       API_KEY:
       ALLOWED_URL_PATTERN: ^https?://(.*\.)google.com/.*$$
     volumes:
-      - ./tests/resources/templates:/data/templates
+      - ./.templates:/data/templates
       - ./tests/resources/report:/app/tests/resources/report
     deploy:
       resources:

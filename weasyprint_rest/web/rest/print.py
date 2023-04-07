@@ -67,8 +67,8 @@ def _build_template():
     })
     assets = _parse_request_argument("asset[]", [])
     template_name = _parse_request_argument("template", None)
-    base_template = TemplateLoader().get(template_name)
-
+    template_loader = TemplateLoader()
+    base_template = template_loader.get(template_name)
     return Template(styles=styles, assets=assets, base_template=base_template)
 
 
@@ -77,7 +77,7 @@ class PrintAPI(Resource):
 
     def __init__(self):
         super(PrintAPI, self).__init__()
-
+        
     def post(self):
         mode = _parse_request_argument("mode", "pdf")
         disposition = _parse_request_argument("disposition", "inline")
@@ -86,13 +86,19 @@ class PrintAPI(Resource):
             "file_name": "document.html"
         })
 
+        if mode != 'pdf' and mode != 'png':
+            return abort(422, description="No valid type")
+
         if html is None:
             return abort(422, description="Required argument 'html' is missing.")
 
-        template = _build_template()
-
-        printer = WeasyPrinter(html, template=template)
-        content = printer.write(mode)
+        # loop to show the memoryleak 
+        loops = 100
+        for i in range(0, loops):
+            template = _build_template()
+            
+            printer = WeasyPrinter(html, template=template)
+            content = printer.write(mode)
 
         # build response
         response = make_response(content)
@@ -112,6 +118,8 @@ class PrintAPI(Resource):
             extension
         )
 
+        printer.close()
         html.close()
+        template.close()
 
         return response

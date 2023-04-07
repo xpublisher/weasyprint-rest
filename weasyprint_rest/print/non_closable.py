@@ -7,6 +7,9 @@ class NonClosable:
         if hasattr(self.stream_like, "seek"):
             self.stream_like.seek(0)
 
+    def forceClose(self):
+        self.stream_like.close()
+
     def __bool__(self):
         return self.stream_like.__bool__()
 

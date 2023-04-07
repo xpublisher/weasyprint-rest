@@ -1,8 +1,10 @@
-FROM python:3-buster AS builder
+FROM python:3-bullseye AS builder
 RUN apt-get update && apt-get upgrade -y &&  apt-get dist-upgrade -y
 RUN apt-get install -y --no-install-recommends --yes python3-venv gcc libpython3-dev && \
     python3 -m venv /venv && \
     /venv/bin/pip install --upgrade pip
+
+RUN apt-get install -y libpango-1.0-0
 
 COPY requirements.txt /requirements.txt
 RUN /venv/bin/pip install -r /requirements.txt
@@ -29,6 +31,7 @@ ENV ENABLE_RUNTIME_TEST_ONLY=false
 ENV PATH="/venv/bin:${PATH}"
 
 WORKDIR /app
+RUN pip install psutil
 ENTRYPOINT ["/app/run-dev.sh"]
 
 LABEL name={NAME}
